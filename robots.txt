@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://habit-0vg.pages.dev/sitemap.xml
