@@ -3,8 +3,8 @@
 یه اپلیکیشن ساده برای پیگیری عادت‌های روزانه.
 
 ## صفحات اصلی
-- [/](https://your-site.pages.dev/) - صفحه اصلی
-- [/about](https://your-site.pages.dev/about) - درباره ما
+- [/](https://en-five-zeta.vercel.app/) - صفحه اصلی
+- [/about](https://en-five-zeta.vercel.app/about) - درباره ما
 
 ## ویژگی‌ها
 - افزودن عادت جدید
