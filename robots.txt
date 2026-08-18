@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://habit-0vg.pages.dev/sitemap.xml
+Sitemap: https://en-five-zeta.vercel.app/sitemap.xml
