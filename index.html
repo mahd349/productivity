@@ -185,7 +185,7 @@ select.sel{cursor:pointer;min-width:120px}
 .icon-pick-btn:hover{border-color:var(--accent)}
 .icon-pick-btn:focus-visible{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
 .icon-pick-btn[aria-expanded="true"]{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
-.icon-pop{position:absolute;top:calc(100% + 8px);inset-inline-start:0;z-index:60;display:none;grid-template-columns:repeat(6,1fr);gap:4px;width:298px;max-width:78vw;padding:9px;background:var(--pop-bg);border:1px solid var(--border-strong);border-radius:16px;box-shadow:0 22px 50px rgba(0,0,0,.4)}
+.icon-pop{position:absolute;top:calc(100% + 8px);inset-inline-start:0;z-index:60;display:none;grid-template-columns:repeat(6,1fr);gap:4px;width:298px;max-width:78vw;max-height:min(352px,62vh);overflow-y:auto;padding:9px;background:var(--pop-bg);border:1px solid var(--border-strong);border-radius:16px;box-shadow:0 22px 50px rgba(0,0,0,.4)}
 .icon-pop.open{display:grid}
 .theme-pick{position:relative;display:inline-flex}
 .theme-pop{position:absolute;top:calc(100% + 8px);inset-inline-start:0;z-index:200;display:none;flex-direction:column;gap:3px;width:190px;padding:8px;background:var(--pop-bg);border:1px solid var(--border-strong);border-radius:16px;box-shadow:0 22px 50px rgba(0,0,0,.45)}
@@ -198,7 +198,7 @@ select.sel{cursor:pointer;min-width:120px}
 .theme-opt .chk{margin-inline-start:auto;font-size:12px;opacity:0;color:var(--accent)}
 .theme-opt[aria-selected="true"] .chk{opacity:1}
 .card.raised{position:relative;z-index:80}
-.icon-opt{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:3px;padding:7px 2px 5px;border:none;background:transparent;color:var(--text-secondary);border-radius:10px;cursor:pointer;font-family:inherit;font-size:9.5px;font-weight:600;line-height:1.25;text-align:center;transition:background .15s,color .15s}
+.icon-opt{display:flex;align-items:center;justify-content:center;padding:8px 2px;border:none;background:transparent;color:var(--text-secondary);border-radius:10px;cursor:pointer;transition:background .15s,color .15s}
 .icon-opt:hover{background:var(--accent-glow);color:var(--accent)}
 .icon-opt:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 .icon-opt[aria-selected="true"]{background:var(--accent);color:#fff}
@@ -377,6 +377,13 @@ html[dir="rtl"] .progress-ring-circle{transform:rotate(-90deg) scaleY(1)}
 .faq-item{background:var(--bg-card);border-radius:var(--radius-sm);padding:18px 22px;margin-bottom:11px;border:1px solid var(--border)}
 .faq-item h3{margin:0 0 7px;font-size:15px;color:var(--accent)}
 .faq-item p{margin:0;font-size:13.5px}
+/* ---------- feedback ---------- */
+.feedback-form{display:flex;flex-direction:column;gap:12px}
+.feedback-form .fb-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.feedback-form textarea.input{flex:none;width:100%;min-height:110px;resize:vertical}
+.feedback-form .btn{align-self:flex-end}
+.feedback-note{font-size:12.5px;color:var(--text-muted);font-weight:600;line-height:1.9;margin-bottom:14px;text-align:center}
+@media (max-width:640px){.feedback-form .fb-row{grid-template-columns:1fr}.feedback-form .btn{align-self:stretch}}
 @media (max-width:640px){
 body{padding:16px}
 .card{padding:18px;border-radius:18px}
@@ -693,6 +700,26 @@ font-size:11.5px;color:var(--text-muted);text-align:center;line-height:1.9}
 </div>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<!-- FEEDBACK -->
+<section class="landing-section" aria-label="بازخورد">
+<h2>نظرت را بگو</h2>
+<div class="card">
+<p class="feedback-note">پیشنهاد، انتقاد یا باگ — هر پیامی مستقیم به صندوق ما می‌رسد و خودمان می‌خوانیمش.</p>
+<!-- TODO: YOUR_ID را با شناسهٔ واقعی فرم Formspree جایگزین کنید (حساب روی hello.routine@outlook.com) -->
+<form class="feedback-form" action="https://formspree.io/f/xnpaednv" method="POST">
+<div class="fb-row">
+<input class="input" type="email" name="email" placeholder="ایمیل (اختیاری)" aria-label="ایمیل (اختیاری)">
+<select class="sel input" name="type" aria-label="نوع بازخورد">
+<option>گزارش باگ</option>
+<option>پیشنهاد ویژگی جدید</option>
+<option>بازخورد عمومی</option>
+</select>
+</div>
+<textarea class="input" name="message" placeholder="پیام شما..." required aria-label="پیام شما"></textarea>
+<button class="btn btn-primary" type="submit">ارسال</button>
+</form>
+</div>
+</section>
 <section class="landing-section" aria-label="ویژگی‌های روتین">
 <h2>ویژگی‌های روتین</h2>
 <div class="features-grid">
@@ -747,19 +774,197 @@ const FA_DIGITS = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
 /* ==========================================================================
 0. LANGUAGE (fa / en)
 ========================================================================== */
-var I18N = {"🎨 پوسته": "🎨 Theme", "📥 پشتیبان": "📥 Backup", "📤 بازیابی": "📤 Restore", "⬇️ نصب": "⬇️ Install", "🔥 کارت استریک": "🔥 Streak card", "📚 مقاله‌ها": "📚 Articles", "❓ راهنما": "❓ Help", "تغییر پوسته (T)": "Change theme (T)", "انتخاب پوسته": "Choose theme", "دانلود پشتیبان JSON": "Download JSON backup", "بازیابی از فایل JSON": "Restore from JSON file", "نصب روی دستگاه": "Install on your device", "ساخت تصویر استریک برای اشتراک‌گذاری (S)": "Create a shareable streak image (S)", "مقاله‌های آموزشی عادت‌سازی": "Habit-building articles", "راهنما و میان‌برها (؟)": "Help and shortcuts (?)", "روتین": "Routine", "پیگیری عادت‌ها و وظایف روزانه": "Track your daily habits and tasks", "بخش‌های داشبورد": "Dashboard sections", "وظایف": "Tasks", "عادت‌ها": "Habits", "امروز": "Today", "تقویم": "Calendar", "آمار": "Stats", "➕ افزودن وظیفه جدید": "➕ Add a new task", "نام وظیفه…": "Task name…", "نام وظیفه": "Task name", "تاریخ وظیفه": "Task date", "اولویت": "Priority", "🟡 معمولی": "🟡 Normal", "🔴 مهم": "🔴 Important", "⚪ کم‌اهمیت": "⚪ Low", "افزودن": "Add", "تاریخ انتخاب‌شده:": "Selected date:", "📋 لیست وظایف": "📋 Task list", "🔍 جستجو در وظایف…": "🔍 Search tasks…", "جستجو در وظایف": "Search tasks", "فیلتر وظایف": "Filter tasks", "همه": "All", "در انتظار": "Pending", "عقب‌افتاده": "Overdue", "انجام شده": "Done", "🧹 پاک‌کردن انجام‌شده‌ها": "🧹 Clear completed", "ویرایش": "Edit", "حذف": "Delete", "هیچ وظیفه‌ای یافت نشد": "No tasks found", "وظیفه‌ای یافت نشد": "No tasks found", "اولین وظیفهٔ خود را از فرم بالا اضافه کنید.": "Add your first task using the form above.", "➕ افزودن عادت جدید": "➕ Add a new habit", "نام عادت…": "Habit name…", "نام عادت": "Habit name", "دسته‌بندی": "Category", "نوع عادت": "Habit type", "هدف": "Goal", "هدف روزانه": "Daily goal", "هدف روزانه — برای تایمر بر حسب دقیقه": "Daily goal — in minutes for timer habits", "رنگ عادت": "Habit colour", "انتخاب نماد عادت": "Choose a habit icon", "نمادها": "Icons", "نماد عادت": "Habit icon", "🔍 جستجو در عادت‌ها…": "🔍 Search habits…", "جستجو در عادت‌ها": "Search habits", "فیلتر دسته": "Filter by category", "سلامت": "Health", "ورزش": "Fitness", "یادگیری": "Learning", "کار": "Work", "شخصی": "Personal", "مالی": "Finance", "هنر": "Creative", "خانه": "Home", "✅ چک‌باکس": "✅ Checkbox", "⏱️ تایمر": "⏱️ Timer", "🔢 عددی": "🔢 Numeric", "هدف اختیاری است. برای عادت تایمری، هدف بر حسب": "The goal is optional. For timer habits it is set in", "دقیقه": "minutes", "وارد می‌شود.": ".", "بدون هدف": "No goal", "کاهش": "Decrease", "افزایش": "Increase", "🔥 عادت‌های امروز": "🔥 Today's habits", "هیچ عادتی یافت نشد": "No habits found", "اولین عادت خود را از فرم بالا بسازید.": "Create your first habit using the form above.", "📊 وضعیت امروز": "📊 Today's overview", "نمودار پیشرفت روزانه": "Daily progress chart", "پیشرفت": "Progress", "📋 وظایف امروز": "📋 Today's tasks", "🔥 عادت‌های باقی‌مانده": "🔥 Remaining habits", "📅 تقویم شمسی": "📅 Persian calendar", "ماه قبل": "Previous month", "ماه بعد": "Next month", "پرمشغله (۷۰٪+)": "Busy (70%+)", "متوسط (۳۰–۷۰٪)": "Moderate (30–70%)", "کم‌کار (زیر ۳۰٪)": "Light (under 30%)", "بدون فعالیت": "No activity", "🗓️ نقشهٔ حرارتی ۱۸۲ روز اخیر": "🗓️ Heatmap of the last 182 days", "هرچه خانه پررنگ‌تر، آن روز فعال‌تر بوده است.": "The darker the cell, the more active that day was.", "📈 آمار کلی": "📈 Overall stats", "📊 نرخ تکمیل ۷ روز اخیر": "📊 Completion rate, last 7 days", "درصد": "Percent", "میانگین هفته:": "Weekly average:", "📈 روند ۳۰ روز اخیر": "📈 30-day trend", "📊 نمودار هر عادت": "📊 Per-habit chart", "۷ روز اخیر": "Last 7 days", "نمودار روند پیشرفت": "Progress trend chart", "⚙️ مدیریت داده‌ها": "⚙️ Data management", "حجم فعلی داده‌ها:": "Current data size:", ". داده‌ها فقط در همین مرورگر ذخیره می‌شوند؛ پیش از پاک‌کردن حافظهٔ مرورگر حتماً پشتیبان بگیرید.": ". Data is stored only in this browser. Always take a backup before clearing your browser storage.", "📥 دانلود پشتیبان": "📥 Download backup", "🗑️ پاک‌کردن همهٔ داده‌ها": "🗑️ Delete all data", "ویژگی‌ها": "Features", "ویژگی‌های روتین": "Routine features", "مدیریت وظایف": "Task management", "وظایف روزانه را با تاریخ و اولویت ثبت کنید؛ کارهای عقب‌افتاده خودکار مشخص می‌شوند.": "Log daily tasks with dates and priorities. Overdue items are flagged automatically.", "استریک عادت‌ها": "Habit streaks", "تعداد روزهای پشت‌سرهم و بهترین رکورد هر عادت را ببینید و انگیزه‌تان را حفظ کنید.": "See consecutive days and the best record for every habit, and keep your motivation up.", "تقویم شمسی": "Persian calendar", "تقویم دقیق شمسی به‌همراه نقشهٔ حرارتی ۶ ماه اخیر برای دید کلی از عملکردتان.": "An accurate Persian calendar plus a 6-month heatmap for an overview of your performance.", "نمودار پیشرفت": "Progress charts", "نرخ تکمیل هفتگی، روند ۳۰ روزه و نمودار اختصاصی برای هر عادت.": "Weekly completion rate, a 30-day trend, and a dedicated chart for each habit.", "حریم خصوصی کامل": "Complete privacy", "هیچ داده‌ای به سرور ارسال نمی‌شود و هر وقت بخواهید می‌توانید پشتیبان کامل بگیرید.": "No data is ever sent to a server, and you can export a full backup whenever you like.", "درباره روتین": "About Routine", "روتین چیست؟": "What is Routine?", "روتین یک": "Routine is a", "ابزار رایگان و تحت وب": "free, web-based tool", "برای مدیریت زمان، پیگیری عادت‌ها و سازماندهی وظایف روزانه است. این ابزار به‌ویژه برای کاربران فارسی‌زبان طراحی شده و از": "for managing your time, tracking habits and organising daily tasks. It supports the", "پشتیبانی می‌کند.": ".", "برخلاف اپلیکیشن‌های پیچیده و گران‌قیمت، روتین نیازی به نصب ندارد. کافی است وارد سایت شوید و بلافاصله شروع به برنامه‌ریزی کنید. تمام داده‌ها به‌صورت محلی در مرورگر شما ذخیره می‌شود و حریم خصوصی شما کاملاً محفوظ است.": "Unlike complicated, expensive apps, Routine needs no installation. Open the site and start planning straight away. All data is stored locally in your browser, so your privacy is fully protected.", "چرا پیگیری عادت‌ها مهم است؟": "Why does habit tracking matter?", "تحقیقات نشان می‌دهد ساخت یک عادت جدید حدود ۲۱ تا ۶۶ روز زمان می‌برد. با ثبت روزانهٔ عادت‌ها می‌توانید:": "Research suggests a new habit takes roughly 21 to 66 days to form. By logging habits daily you can:", "تداوم خود را در قالب استریک و نمودار ببینید": "See your consistency as a streak and a chart", "روزهای کم‌کار را شناسایی و جبران کنید": "Spot low-activity days and make up for them", "با تایمر داخلی، زمان دقیق فعالیت‌ها را اندازه بگیرید": "Measure exactly how long each activity takes with the built-in timer", "با هدف‌گذاری روزانه، پیشرفت واقعی را بسنجید": "Measure real progress with daily goals", "با دسته‌بندی عادت‌ها، تعادل زندگی شخصی و کاری را حفظ کنید": "Keep work and personal life balanced by categorising habits", "سوالات متداول": "Frequently asked questions", "آیا اطلاعات من امن است؟": "Is my data safe?", "بله. تمام داده‌ها فقط در حافظهٔ مرورگر خودتان ذخیره می‌شود و به هیچ سروری ارسال نمی‌شود.": "Yes. All data is stored only in your own browser and is never sent to any server.", "چگونه از داده‌هایم پشتیبان بگیرم؟": "How do I back up my data?", "از دکمهٔ «پشتیبان» در بالای صفحه استفاده کنید. فایل JSON دانلودشده را در جای امن نگه دارید و هر وقت خواستید با «بازیابی» برگردانید.": "Use the \"Backup\" button in the menu. Keep the downloaded JSON file somewhere safe and bring it back any time with \"Restore\".", "استریک چطور حساب می‌شود؟": "How is a streak calculated?", "هر روزی که عادت را کامل کنید یک روز به استریک اضافه می‌شود. اگر یک روز را از دست بدهید، شمارش از صفر شروع می‌شود؛ اما بهترین رکورد شما همیشه ذخیره می‌ماند.": "Every day you complete a habit adds one day to the streak. Miss a day and the count restarts from zero, but your best record is always kept.", "می‌توانم برای هر عادت هدف مشخص کنم؟": "Can I set a goal for each habit?", "بله. هنگام ساخت یا ویرایش عادت، هدف روزانه را وارد کنید تا نوار پیشرفت فعال شود و درصد تکمیل روزانه دقیق محاسبه شود.": "Yes. When creating or editing a habit, enter a daily goal to switch on the progress bar and get an accurate daily completion percentage.", "بهره‌وری چیست؟": "What is productivity?", "بهره‌وری یعنی انجام کارهای مهم‌تر در زمان کمتر؛ نه سخت‌تر کار کردن، بلکه هوشمندانه‌تر برنامه‌ریزی کردن تا به اهدافتان نزدیک‌تر شوید.": "Productivity means getting the important things done in less time. Not working harder, but planning smarter so you get closer to your goals.", "— ابزار رایگان و فارسی پیگیری عادت‌ها، وظایف و مدیریت زمان با تقویم شمسی و نمودار پیشرفت": "— a free habit, task and time-management tracker with a calendar and progress charts", "راهنمای عادت‌سازی": "Habit-building guide", "چند روز طول می‌کشد تا یک عادت شکل بگیرد؟": "How long does it take to form a habit?", "چند روز تا یک عادت؟": "How long to form a habit?", "قانون دو دقیقه": "The two-minute rule", "استریک چیست؟": "What is a streak?", "برنامه‌ریزی با تقویم شمسی": "A daily planning system", "تکنیک پومودورو": "The Pomodoro technique", "۳۰ ایدهٔ عادت روزانه": "30 daily habit ideas", "همهٔ مقاله‌ها ←": "All articles →", "ساخته‌شده برای افزایش بهره‌وری | ©": "Built to boost your productivity | ©", "تمامی حقوق محفوظ است": "All rights reserved", "بستن": "Close", "انصراف": "Cancel", "بله، پاک کن": "Yes, delete everything", "📥 اول پشتیبان": "📥 Back up first", "پیش‌نمایش کارت استریک": "Streak card preview", "📤 داده‌ها بازیابی شدند": "📤 Data restored", "❌ فایل نامعتبر است": "❌ Invalid file", "⚠️ پاک‌کردن همهٔ داده‌ها": "⚠️ Delete all data", "🗑️ همهٔ داده‌ها پاک شد": "🗑️ All data deleted", "تمام وظایف، عادت‌ها و تاریخچه برای همیشه پاک می‌شوند.": "All tasks, habits and history will be permanently deleted.", "پیشنهاد می‌کنیم اول پشتیبان بگیرید.": "We recommend taking a backup first.", "دانلود تصویر": "Download image", "اشتراک‌گذاری": "Share", "کپی متن": "Copy text", "روز پیاپی": "day streak", "بیشترین روز پیاپی": "longest streak", "روز فعال": "active days", "بهترین استریک": "Best streak", "روز انجام‌شده": "Days completed", "هفتهٔ گذشته": "Last week", "عادت در حال پیگیری": "Habits tracked", "۱۸ هفتهٔ گذشته": "Last 18 weeks", "منو": "Menu", "زبان": "Language", "فارسی": "Persian", "انگلیسی": "English", "تنظیمات و ابزارها": "Settings and tools", "باز کردن منو": "Open menu", "بستن منو": "Close menu", "راهنمای داشبورد": "Dashboard guide", "میان‌برهای صفحه‌کلید": "Keyboard shortcuts", "کارت استریک برای اشتراک‌گذاری": "Shareable streak card", "تغییر زبان (فارسی / English)": "Switch language (Persian / English)", "تاریخ": "Date", "ذخیره تغییرات": "Save changes", "مطمئن هستید؟": "Are you sure?", "بله، حذف کن": "Yes, delete", "رنگ": "Colour", "نماد": "Icon", "با حذف «": "Deleting \"", "» تمام تاریخچه و استریک آن هم پاک می‌شود.": "\" will erase all of its history and streak.", "شروع کنید": "Get started", "عادتی یافت نشد": "No habits found", "با یک عادت کوچک شروع کنید — مثلاً ۱۰ دقیقه مطالعه.": "Start with one small habit, such as 10 minutes of reading.", "وظیفه‌ای برای امروز نیست": "Nothing scheduled for today", "روز آزادی دارید — یا شاید وقتش است هدف تازه‌ای تعریف کنید.": "Your day is free, or it might be time to set a new goal.", "📋 وظایف": "📋 Tasks", "🔥 عادت‌ها": "🔥 Habits", "📊 امروز": "📊 Today", "📅 تقویم": "📅 Calendar", "📈 آمار": "📈 Stats", "این روز فعالیتی ثبت نشده": "No activity recorded on this day", "عادتی برای نمایش وجود ندارد": "There are no habits to show", "هنوز عادتی ثبت نکرده‌اید.": "You have not added any habits yet.", "اول یک عادت بسازید و چند روز تیک‌ش بزنید؛ بعد اینجا یک تصویر قابل اشتراک‌گذاری می‌سازیم.": "Create a habit and tick it off for a few days, then we will build a shareable image here.", "➕ ساختن عادت": "➕ Create a habit", "عادت روی کارت": "Habit on the card", "خودکار — بلندترین استریک": "Automatic — longest streak", "📤 اشتراک‌گذاری": "📤 Share", "⬇️ دانلود تصویر": "⬇️ Download image", "📋 کپی متن": "📋 Copy text", "کارت با پوستهٔ فعلی ساخته می‌شود — پوسته را عوض کنید تا رنگ دیگری بگیرد.": "The card uses your current theme. Switch theme for different colours.", "⌨️ میان‌برهای صفحه‌کلید": "⌨️ Keyboard shortcuts", "💡 نکته‌ها": "💡 Tips", "• داده‌ها خودکار ذخیره می‌شوند؛ نیازی به دکمهٔ ذخیره نیست.": "• Everything saves automatically, there is no save button.", "• تایمر بر پایهٔ زمان واقعی است و با بستن تب از بین نمی‌رود.": "• The timer uses real time and survives closing the tab.", "• برای هر عادت می‌توانید هدف روزانه تعیین کنید تا نوار پیشرفت فعال شود.": "• Set a daily goal on any habit to switch on its progress bar.", "• هر هفته یک‌بار پشتیبان JSON بگیرید؛ داده‌ها فقط در همین مرورگر هستند.": "• Take a JSON backup weekly. Your data lives only in this browser.", "❌ حافظهٔ مرورگر پر است — پشتیبان بگیرید و داده‌های قدیمی را پاک کنید": "❌ Browser storage is full. Take a backup and clear old data.", "▶️ تایمر شروع شد": "▶️ Timer started", "🌅 روز جدید شروع شد": "🌅 A new day has started", "↩️ بازگردانی شد": "↩️ Undone", "❌ نام وظیفه را وارد کنید": "❌ Enter a task name", "✅ وظیفه اضافه شد": "✅ Task added", "🎉 آفرین!": "🎉 Nice work!", "چیزی برای پاک‌کردن نیست": "There is nothing to clear", "❌ نام نمی‌تواند خالی باشد": "❌ The name cannot be empty", "✅ ذخیره شد": "✅ Saved", "❌ نام عادت را وارد کنید": "❌ Enter a habit name", "✅ عادت اضافه شد": "✅ Habit added", "تصویر دانلود شد — حالا استوری‌اش کن 🔥": "Image downloaded. Time to share it 🔥", "متن کپی شد ✅": "Text copied ✅", "مرورگر اجازهٔ کپی نداد": "The browser blocked copying", "📥 فایل پشتیبان دانلود شد": "📥 Backup file downloaded", "🔄 داده‌ها از تب دیگر به‌روز شد": "🔄 Data updated from another tab", "✏️ ویرایش وظیفه": "✏️ Edit task", "🗑️ حذف عادت": "🗑️ Delete habit", "✏️ ویرایش عادت": "✏️ Edit habit", "❓ راهنما و میان‌برها": "❓ Help and shortcuts", "🗑️ وظیفه حذف شد": "🗑️ Task deleted", "آب": "Water", "دویدن": "Running", "مطالعه": "Reading", "مراقبه": "Meditation", "وزنه": "Weights", "موسیقی": "Music", "کدنویسی": "Coding", "تغذیه": "Nutrition", "خواب": "Sleep", "ترک سیگار": "Quit smoking", "پس‌انداز": "Saving", "نقاشی": "Drawing", "نظافت": "Cleaning", "نوشتن": "Writing", "صبح زود": "Early rise", "پیاده‌روی": "Walking", "تمرکز": "Focus", "بی‌گوشی": "No phone", "گیاه": "Plants", "دوچرخه": "Cycling", "سلامتی": "Wellbeing", "قهوه": "Coffee", "ارتباط": "Connection", "رفتن به فرم وظیفهٔ جدید": "Jump to the new task form", "تب عادت‌ها": "Habits tab", "تغییر پوسته روشن/تاریک": "Switch light/dark theme", "جابه‌جایی بین تب‌ها": "Move between tabs", "فوکوس روی جستجو": "Focus the search box", "بستن پنجره": "Close the dialog", "همین راهنما": "This help panel", "باز و بستن منو": "Open and close the menu", "تاریک": "Dark", "صورتی": "Pink", "آبی": "Blue", "روشن": "Light", "🌙 تاریک": "🌙 Dark", "🌸 صورتی": "🌸 Pink", "🌊 آبی": "🌊 Blue", "☀️ روشن": "☀️ Light", "۱ تا ۵": "1 to 5", "🌐 زبان": "🌐 Language", "؟": "?", "داده‌ها": "Data", "پوسته": "Theme", "کارت استریک": "Streak card", "مقاله‌ها": "Articles", "راهنما": "Help", "نصب": "Install", "پشتیبان": "Backup", "بازیابی": "Restore"};
+var I18N = {
+"🎨 پوسته": "🎨 Theme", "📥 پشتیبان": "📥 Backup", "📤 بازیابی": "📤 Restore", "⬇️ نصب": "⬇️ Install",
+"🔥 کارت استریک": "🔥 Streak card", "📚 مقاله‌ها": "📚 Articles", "❓ راهنما": "❓ Help",
+"تغییر پوسته (T)": "Change theme (T)", "انتخاب پوسته": "Choose theme",
+"دانلود پشتیبان JSON": "Download JSON backup", "بازیابی از فایل JSON": "Restore from JSON file",
+"نصب روی دستگاه": "Install on your device", "ساخت تصویر استریک برای اشتراک‌گذاری (S)": "Create a shareable streak image (S)",
+"مقاله‌های آموزشی عادت‌سازی": "Habit-building articles", "راهنما و میان‌برها (؟)": "Help and shortcuts (?)",
+"روتین": "Routine", "پیگیری عادت‌ها و وظایف روزانه": "Track your daily habits and tasks",
+"بخش‌های داشبورد": "Dashboard sections", "خانه": "Home", "وظایف": "Tasks", "عادت‌ها": "Habits",
+"امروز": "Today", "تقویم": "Calendar", "آمار": "Stats", "گزارش‌ها": "Reports", "ابزارها": "Tools",
+"➕ افزودن وظیفه جدید": "➕ Add a new task", "+ وظیفه جدید": "+ New task",
+"نام وظیفه…": "Task name…", "نام وظیفه": "Task name", "تاریخ وظیفه": "Task date", "اولویت": "Priority",
+"🟡 معمولی": "🟡 Normal", "🔴 مهم": "🔴 Important", "⚪ کم‌اهمیت": "⚪ Low", "افزودن": "Add",
+"تاریخ انتخاب‌شده:": "Selected date:", "📋 لیست وظایف": "📋 Task list",
+"🔍 جستجو در وظایف…": "🔍 Search tasks…", "جستجو در وظایف": "Search tasks",
+"فیلتر وظایف": "Filter tasks", "همه": "All", "در انتظار": "Pending", "عقب‌افتاده": "Overdue",
+"انجام شده": "Done", "🧹 پاک‌کردن انجام‌شده‌ها": "🧹 Clear completed",
+"ویرایش": "Edit", "حذف": "Delete", "هیچ وظیفه‌ای یافت نشد": "No tasks found",
+"وظیفه‌ای یافت نشد": "No tasks found", "اولین وظیفهٔ خود را از فرم بالا اضافه کنید.": "Add your first task using the form above.",
+"➕ افزودن عادت جدید": "➕ Add a new habit", "نام عادت…": "Habit name…", "نام عادت": "Habit name",
+"دسته‌بندی": "Category", "نوع عادت": "Habit type", "هدف": "Goal", "هدف روزانه": "Daily goal",
+"هدف روزانه — برای تایمر بر حسب دقیقه": "Daily goal — in minutes for timer habits",
+"رنگ عادت": "Habit colour", "انتخاب نماد عادت": "Choose a habit icon", "نمادها": "Icons", "نماد عادت": "Habit icon",
+"🔍 جستجو در عادت‌ها…": "🔍 Search habits…", "جستجو در عادت‌ها": "Search habits",
+"فیلتر دسته": "Filter by category", "سلامت": "Health", "ورزش": "Fitness", "یادگیری": "Learning",
+"کار": "Work", "شخصی": "Personal", "مالی": "Finance", "هنر": "Creative", "خانه": "Home",
+"✅ چک‌باکس": "✅ Checkbox", "⏱️ تایمر": "⏱️ Timer", "🔢 عددی": "🔢 Numeric",
+"هدف اختیاری است. برای عادت تایمری، هدف بر حسب": "The goal is optional. For timer habits it is set in",
+"دقیقه": "minutes", "وارد می‌شود.": ".", "بدون هدف": "No goal", "کاهش": "Decrease", "افزایش": "Increase",
+"🔥 عادت‌های امروز": "🔥 Today's habits", "هیچ عادتی یافت نشد": "No habits found",
+"اولین عادت خود را از فرم بالا بسازید.": "Create your first habit using the form above.",
+"📊 وضعیت امروز": "📊 Today's overview", "نمودار پیشرفت روزانه": "Daily progress chart",
+"پیشرفت": "Progress", "📋 وظایف امروز": "📋 Today's tasks", "🔥 عادت‌های باقی‌مانده": "🔥 Remaining habits",
+"📅 تقویم شمسی": "📅 Persian calendar", "ماه قبل": "Previous month", "ماه بعد": "Next month",
+"پرمشغله (۷۰٪+)": "Busy (70%+)", "متوسط (۳۰–۷۰٪)": "Moderate (30–70%)", "کم‌کار (زیر ۳۰٪)": "Light (under 30%)",
+"بدون فعالیت": "No activity", "🗓️ نقشهٔ حرارتی ۱۸۲ روز اخیر": "🗓️ Heatmap of the last 182 days",
+"هرچه خانه پررنگ‌تر، آن روز فعال‌تر بوده است.": "The darker the cell, the more active that day was.",
+"📈 آمار کلی": "📈 Overall stats", "📊 نرخ تکمیل ۷ روز اخیر": "📊 Completion rate, last 7 days",
+"درصد": "Percent", "میانگین هفته:": "Weekly average:", "📈 روند ۳۰ روز اخیر": "📈 30-day trend",
+"📊 نمودار هر عادت": "📊 Per-habit chart", "۷ روز اخیر": "Last 7 days", "نمودار روند پیشرفت": "Progress trend chart",
+"⚙️ مدیریت داده‌ها": "⚙️ Data management", "حجم فعلی داده‌ها:": "Current data size:",
+". داده‌ها فقط در همین مرورگر ذخیره می‌شوند؛ پیش از پاک‌کردن حافظهٔ مرورگر حتماً پشتیبان بگیرید.": ". Data is stored only in this browser. Always take a backup before clearing your browser storage.",
+"📥 دانلود پشتیبان": "📥 Download backup", "🗑️ پاک‌کردن همهٔ داده‌ها": "🗑️ Delete all data",
+"ویژگی‌ها": "Features", "ویژگی‌های روتین": "Routine features", "مدیریت وظایف": "Task management",
+"وظایف روزانه را با تاریخ و اولویت ثبت کنید؛ کارهای عقب‌افتاده خودکار مشخص می‌شوند.": "Log daily tasks with dates and priorities. Overdue items are flagged automatically.",
+"استریک عادت‌ها": "Habit streaks",
+"تعداد روزهای پشت‌سرهم و بهترین رکورد هر عادت را ببینید و انگیزه‌تان را حفظ کنید.": "See consecutive days and the best record for every habit, and keep your motivation up.",
+"تقویم شمسی": "Persian calendar",
+"تقویم دقیق شمسی به‌همراه نقشهٔ حرارتی ۶ ماه اخیر برای دید کلی از عملکردتان.": "An accurate Persian calendar plus a 6-month heatmap for an overview of your performance.",
+"نمودار پیشرفت": "Progress charts",
+"نرخ تکمیل هفتگی، روند ۳۰ روزه و نمودار اختصاصی برای هر عادت.": "Weekly completion rate, a 30-day trend, and a dedicated chart for each habit.",
+"حریم خصوصی کامل": "Complete privacy",
+"هیچ داده‌ای به سرور ارسال نمی‌شود و هر وقت بخواهید می‌توانید پشتیبان کامل بگیرید.": "No data is ever sent to a server, and you can export a full backup whenever you like.",
+"درباره روتین": "About Routine", "روتین چیست؟": "What is Routine?", "روتین یک": "Routine is a",
+"ابزار رایگان و تحت وب": "free, web-based tool",
+"برای مدیریت زمان، پیگیری عادت‌ها و سازماندهی وظایف روزانه است. این ابزار به‌ویژه برای کاربران فارسی‌زبان طراحی شده و از": "for managing your time, tracking habits and organising daily tasks. It supports the",
+"پشتیبانی می‌کند.": ".",
+"برخلاف اپلیکیشن‌های پیچیده و گران‌قیمت، روتین نیازی به نصب ندارد. کافی است وارد سایت شوید و بلافاصله شروع به برنامه‌ریزی کنید. تمام داده‌ها به‌صورت محلی در مرورگر شما ذخیره می‌شود و حریم خصوصی شما کاملاً محفوظ است.": "Unlike complicated, expensive apps, Routine needs no installation. Open the site and start planning straight away. All data is stored locally in your browser, so your privacy is fully protected.",
+"چرا پیگیری عادت‌ها مهم است؟": "Why does habit tracking matter?",
+"تحقیقات نشان می‌دهد ساخت یک عادت جدید حدود ۲۱ تا ۶۶ روز زمان می‌برد. با ثبت روزانهٔ عادت‌ها می‌توانید:": "Research suggests a new habit takes roughly 21 to 66 days to form. By logging habits daily you can:",
+"تداوم خود را در قالب استریک و نمودار ببینید": "See your consistency as a streak and a chart",
+"روزهای کم‌کار را شناسایی و جبران کنید": "Spot low-activity days and make up for them",
+"با تایمر داخلی، زمان دقیق فعالیت‌ها را اندازه بگیرید": "Measure exactly how long each activity takes with the built-in timer",
+"با هدف‌گذاری روزانه، پیشرفت واقعی را بسنجید": "Measure real progress with daily goals",
+"با دسته‌بندی عادت‌ها، تعادل زندگی شخصی و کاری را حفظ کنید": "Keep work and personal life balanced by categorising habits",
+"سوالات متداول": "Frequently asked questions", "آیا اطلاعات من امن است؟": "Is my data safe?",
+"بله. تمام داده‌ها فقط در حافظهٔ مرورگر خودتان ذخیره می‌شود و به هیچ سروری ارسال نمی‌شود.": "Yes. All data is stored only in your own browser and is never sent to any server.",
+"چگونه از داده‌هایم پشتیبان بگیرم؟": "How do I back up my data?",
+"از دکمهٔ «پشتیبان» در بالای صفحه استفاده کنید. فایل JSON دانلودشده را در جای امن نگه دارید و هر وقت خواستید با «بازیابی» برگردانید.": "Use the \"Backup\" button in the menu. Keep the downloaded JSON file somewhere safe and bring it back any time with \"Restore\".",
+"استریک چطور حساب می‌شود؟": "How is a streak calculated?",
+"هر روزی که عادت را کامل کنید یک روز به استریک اضافه می‌شود. اگر یک روز را از دست بدهید، شمارش از صفر شروع می‌شود؛ اما بهترین رکورد شما همیشه ذخیره می‌ماند.": "Every day you complete a habit adds one day to the streak. Miss a day and the count restarts from zero, but your best record is always kept.",
+"می‌توانم برای هر عادت هدف مشخص کنم؟": "Can I set a goal for each habit?",
+"بله. هنگام ساخت یا ویرایش عادت، هدف روزانه را وارد کنید تا نوار پیشرفت فعال شود و درصد تکمیل روزانه دقیق محاسبه شود.": "Yes. When creating or editing a habit, enter a daily goal to switch on the progress bar and get an accurate daily completion percentage.",
+"بهره‌وری چیست؟": "What is productivity?",
+"بهره‌وری یعنی انجام کارهای مهم‌تر در زمان کمتر؛ نه سخت‌تر کار کردن، بلکه هوشمندانه‌تر برنامه‌ریزی کردن تا به اهدافتان نزدیک‌تر شوید.": "Productivity means getting the important things done in less time. Not working harder, but planning smarter so you get closer to your goals.",
+"— ابزار رایگان و فارسی پیگیری عادت‌ها، وظایف و مدیریت زمان با تقویم شمسی و نمودار پیشرفت": "— a free habit, task and time-management tracker with a calendar and progress charts",
+"راهنمای عادت‌سازی": "Habit-building guide",
+"چند روز طول می‌کشد تا یک عادت شکل بگیرد؟": "How long does it take to form a habit?",
+"چند روز تا یک عادت؟": "How long to form a habit?", "قانون دو دقیقه": "The two-minute rule",
+"استریک چیست؟": "What is a streak?", "برنامه‌ریزی با تقویم شمسی": "A daily planning system",
+"تکنیک پومودورو": "The Pomodoro technique", "۳۰ ایدهٔ عادت روزانه": "30 daily habit ideas",
+"همهٔ مقاله‌ها ←": "All articles →", "ساخته‌شده برای افزایش بهره‌وری | ©": "Built to boost your productivity | ©",
+"تمامی حقوق محفوظ است": "All rights reserved", "بستن": "Close", "انصراف": "Cancel",
+"بله، پاک کن": "Yes, delete everything", "📥 اول پشتیبان": "📥 Back up first",
+"پیش‌نمایش کارت استریک": "Streak card preview", "📤 داده‌ها بازیابی شدند": "📤 Data restored",
+"❌ فایل نامعتبر است": "❌ Invalid file", "⚠️ پاک‌کردن همهٔ داده‌ها": "⚠️ Delete all data",
+"🗑️ همهٔ داده‌ها پاک شد": "🗑️ All data deleted",
+"تمام وظایف، عادت‌ها و تاریخچه برای همیشه پاک می‌شوند.": "All tasks, habits and history will be permanently deleted.",
+"پیشنهاد می‌کنیم اول پشتیبان بگیرید.": "We recommend taking a backup first.",
+"دانلود تصویر": "Download image", "اشتراک‌گذاری": "Share", "کپی متن": "Copy text",
+"روز پیاپی": "day streak", "بیشترین روز پیاپی": "longest streak", "روز فعال": "active days",
+"بهترین استریک": "Best streak", "روز انجام‌شده": "Days completed", "هفتهٔ گذشته": "Last week",
+"عادت در حال پیگیری": "Habits tracked", "۱۸ هفتهٔ گذشته": "Last 18 weeks", "منو": "Menu",
+"زبان": "Language", "فارسی": "Persian", "انگلیسی": "English", "تنظیمات و ابزارها": "Settings and tools",
+"باز کردن منو": "Open menu", "بستن منو": "Close menu", "راهنمای داشبورد": "Dashboard guide",
+"میان‌برهای صفحه‌کلید": "Keyboard shortcuts", "کارت استریک برای اشتراک‌گذاری": "Shareable streak card",
+"تغییر زبان (فارسی / English)": "Switch language (Persian / English)", "تاریخ": "Date",
+"ذخیره تغییرات": "Save changes", "مطمئن هستید؟": "Are you sure?", "بله، حذف کن": "Yes, delete",
+"رنگ": "Colour", "نماد": "Icon", "با حذف «": "Deleting \"",
+"» تمام تاریخچه و استریک آن هم پاک می‌شود.": "\" will erase all of its history and streak.",
+"شروع کنید": "Get started", "عادتی یافت نشد": "No habits found",
+"با یک عادت کوچک شروع کنید — مثلاً ۱۰ دقیقه مطالعه.": "Start with one small habit, such as 10 minutes of reading.",
+"وظیفه‌ای برای امروز نیست": "Nothing scheduled for today",
+"روز آزادی دارید — یا شاید وقتش است هدف تازه‌ای تعریف کنید.": "Your day is free, or it might be time to set a new goal.",
+"📋 وظایف": "📋 Tasks", "🔥 عادت‌ها": "🔥 Habits", "📊 امروز": "📊 Today", "📅 تقویم": "📅 Calendar",
+"📈 آمار": "📈 Stats", "این روز فعالیتی ثبت نشده": "No activity recorded on this day",
+"عادتی برای نمایش وجود ندارد": "There are no habits to show",
+"هنوز عادتی ثبت نکرده‌اید.": "You have not added any habits yet.",
+"اول یک عادت بسازید و چند روز تیک‌ش بزنید؛ بعد اینجا یک تصویر قابل اشتراک‌گذاری می‌سازیم.": "Create a habit and tick it off for a few days, then we will build a shareable image here.",
+"➕ ساختن عادت": "➕ Create a habit", "عادت روی کارت": "Habit on the card",
+"خودکار — بلندترین استریک": "Automatic — longest streak", "📤 اشتراک‌گذاری": "📤 Share",
+"⬇️ دانلود تصویر": "⬇️ Download image", "📋 کپی متن": "📋 Copy text",
+"کارت با پوستهٔ فعلی ساخته می‌شود — پوسته را عوض کنید تا رنگ دیگری بگیرد.": "The card uses your current theme. Switch theme for different colours.",
+"⌨️ میان‌برهای صفحه‌کلید": "⌨️ Keyboard shortcuts", "💡 نکته‌ها": "💡 Tips",
+"• داده‌ها خودکار ذخیره می‌شوند؛ نیازی به دکمهٔ ذخیره نیست.": "• Everything saves automatically, there is no save button.",
+"• تایمر بر پایهٔ زمان واقعی است و با بستن تب از بین نمی‌رود.": "• The timer uses real time and survives closing the tab.",
+"• برای هر عادت می‌توانید هدف روزانه تعیین کنید تا نوار پیشرفت فعال شود.": "• Set a daily goal on any habit to switch on its progress bar.",
+"• هر هفته یک‌بار پشتیبان JSON بگیرید؛ داده‌ها فقط در همین مرورگر هستند.": "• Take a JSON backup weekly. Your data lives only in this browser.",
+"❌ حافظهٔ مرورگر پر است — پشتیبان بگیرید و داده‌های قدیمی را پاک کنید": "❌ Browser storage is full. Take a backup and clear old data.",
+"▶️ تایمر شروع شد": "▶️ Timer started", "🌅 روز جدید شروع شد": "🌅 A new day has started",
+"↩️ بازگردانی شد": "↩️ Undone", "❌ نام وظیفه را وارد کنید": "❌ Enter a task name",
+"✅ وظیفه اضافه شد": "✅ Task added", "🎉 آفرین!": "🎉 Nice work!",
+"چیزی برای پاک‌کردن نیست": "There is nothing to clear", "❌ نام نمی‌تواند خالی باشد": "❌ The name cannot be empty",
+"✅ ذخیره شد": "✅ Saved", "❌ نام عادت را وارد کنید": "❌ Enter a habit name",
+"✅ عادت اضافه شد": "✅ Habit added", "تصویر دانلود شد — حالا استوری‌اش کن 🔥": "Image downloaded. Time to share it 🔥",
+"متن کپی شد ✅": "Text copied ✅", "مرورگر اجازهٔ کپی نداد": "The browser blocked copying",
+"📥 فایل پشتیبان دانلود شد": "📥 Backup file downloaded", "🔄 داده‌ها از تب دیگر به‌روز شد": "🔄 Data updated from another tab",
+"✏️ ویرایش وظیفه": "✏️ Edit task", "🗑️ حذف عادت": "🗑️ Delete habit", "✏️ ویرایش عادت": "✏️ Edit habit",
+"❓ راهنما و میان‌برها": "❓ Help and shortcuts", "🗑️ وظیفه حذف شد": "🗑️ Task deleted",
+"آب": "Water", "دویدن": "Running", "مطالعه": "Reading", "مراقبه": "Meditation", "وزنه": "Weights",
+"موسیقی": "Music", "کدنویسی": "Coding", "تغذیه": "Nutrition", "خواب": "Sleep",
+"ترک سیگار": "Quit smoking", "پس‌انداز": "Saving", "نقاشی": "Drawing", "نظافت": "Cleaning",
+"نوشتن": "Writing", "صبح زود": "Early rise", "پیاده‌روی": "Walking", "تمرکز": "Focus",
+"بی‌گوشی": "No phone", "گیاه": "Plants", "دوچرخه": "Cycling", "سلامتی": "Wellbeing",
+"قهوه": "Coffee", "ارتباط": "Connection", "ستاره": "Star", "عکاسی": "Photography",
+"فیلم": "Movies", "انرژی": "Energy", "حال خوب": "Good vibes", "بخشش": "Giving",
+"زبان خارجی": "Language", "موفقیت": "Success", "پادکست": "Podcast", "ضبط صدا": "Voice",
+"رشد": "Growth", "دوستان": "Friends", "ویدیو": "Video", "تنفس عمیق": "Deep breaths",
+"طلوع": "Sunrise", "سفر": "Travel", "رفتن به فرم وظیفهٔ جدید": "Jump to the new task form",
+"تب عادت‌ها": "Habits tab", "تغییر پوسته روشن/تاریک": "Switch light/dark theme",
+"جابه‌جایی بین تب‌ها": "Move between tabs", "فوکوس روی جستجو": "Focus the search box",
+"بستن پنجره": "Close the dialog", "همین راهنما": "This help panel", "باز و بستن منو": "Open and close the menu",
+"تاریک": "Dark", "صورتی": "Pink", "آبی": "Blue", "روشن": "Light", "🌙 تاریک": "🌙 Dark",
+"🌸 صورتی": "🌸 Pink", "🌊 آبی": "🌊 Blue", "☀️ روشن": "☀️ Light", "۱ تا ۵": "1 to 5",
+"🌐 زبان": "🌐 Language", "؟": "?", "داده‌ها": "Data", "پوسته": "Theme", "کارت استریک": "Streak card",
+"مقاله‌ها": "Articles", "راهنما": "Help", "نصب": "Install", "پشتیبان": "Backup", "بازیابی": "Restore",
+"زمان فعلی": "Right now", "راهنمای سریع": "Quick start",
+"برای دیدن توضیح کامل استفاده از داشبورد، روی علامت سؤال بزن.": "Tap the question mark for a full walkthrough of the dashboard.",
+"امروز": "Today", "فهرست امروز": "Today's list", "مشاهده همه ←": "View all →",
+"پیگیری روزانه": "Daily tracking", "پیشرفت هفتگی": "Weekly progress", "نمودار فعالیت": "Activity chart",
+"گزارش‌ها ←": "Reports →", "روزهای اخیر": "Recent days", "تقویم ←": "Calendar →",
+"مشاهده جزئیات هر روز": "See the details of each day", "فقط عادت‌های تایمری": "Timer habits only",
+"توزیع زمان تمرکز": "Focus-time breakdown", "مدیریت": "Management",
+"کارهای روزانه را با تاریخ و اولویت مرتب کن.": "Organise your daily work by date and priority.",
+"افزودن وظیفه": "Add a task", "لیست": "List", "روتین روزانه": "Daily routine",
+"عادت‌ها را بر اساس دسته‌بندی مدیریت و پیشرفتشان را دنبال کن.": "Manage habits by category and track their progress.",
+"۳ نوع ثبت: ✓ چک‌باکس · 🔢 عددی · ⏱ تایمر": "3 types: ✓ Checkbox · 🔢 Numeric · ⏱ Timer",
+"افزودن عادت": "Add a habit", "هدف اختیاری است؛ درصد و نوار تکمیل فقط زمانی نمایش داده می‌شود که برای عادت هدف تعیین کرده باشی.": "The goal is optional; the progress bar and percentage only appear when you set a goal.",
+"نمای کلی": "Overview", "وضعیت کامل همین روز در یک صفحه.": "Everything about today, on one page.",
+"زمان‌بندی": "Scheduling", "روی هر روز بزن تا دقیقاً ببینی چه کارهایی انجام داده‌ای.": "Tap any day to see exactly what you did.",
+"۶ ماه اخیر": "Last 6 months", "نقشهٔ حرارتی": "Heatmap",
+"روزهای قبلی قابل کلیک هستند و جزئیات همان روز را نشان می‌دهند.": "Past days are clickable and show their details.",
+"تحلیل": "Analysis", "روند پیشرفت، زمان تمرکز و عملکرد عادت‌ها.": "Trends, focus time and habit performance.",
+"هفتهٔ جاری": "Current week", "روند": "Trend", "جزئیات": "Details",
+"حجم فعلی داده‌ها:": "Current data size:",
+". داده‌ها فقط در همین مرورگر ذخیره می‌شوند.": ". Data is stored only in this browser.",
+"نظرت را بگو": "Share your thoughts",
+"پیشنهاد، انتقاد یا باگ — هر پیامی مستقیم به صندوق ما می‌رسد و خودمان می‌خوانیمش.": "Suggestions, feedback or bugs — every message lands in our inbox and we read them ourselves.",
+"ایمیل (اختیاری)": "Email (optional)", "نوع بازخورد": "Feedback type",
+"گزارش باگ": "Bug report", "پیشنهاد ویژگی جدید": "Feature idea", "بازخورد عمومی": "General feedback",
+"پیام شما...": "Your message...", "ارسال": "Send", "مشاهده همه": "View all",
+"گزارش": "Reports", "سلام": "Hello", "امروز یک قدم کوچک هم حساب می‌شود.": "Small wins still count.",
+"تایمرهای فعال": "Active timers", "استریک فعلی": "Current streak", "بهترینِ فعلی": "Current best",
+"روز": "day", "روزها": "days", "دقیقه تمرکز": "Minutes focused", "کامل شده": "Completed",
+"انجام شد": "Done", "انجام نشده": "Not done", "باقی‌مانده": "Remaining", "لغو شد": "Undone",
+"رکورد:": "Record:", "از": "of", "هدف": "Goal", "دقیقه": "min", "شروع": "Start", "توقف": "Stop",
+"برای امروز وظیفه‌ای نداری": "No tasks for today", "هنوز عادتی اضافه نکرده‌ای": "No habits added yet",
+"همهٔ عادت‌های امروز انجام شد!": "All of today's habits are done!", "هنوز عادتی ثبت نشده": "No habits yet",
+"هنوز زمانی ثبت نشده": "No time logged yet",
+"تایمر یک عادت رو شروع کن تا نمودار توزیع اینجا ساخته بشه.": "Start a habit's timer to build the distribution chart here.",
+"ساعت در ۳۰ روز": "Hours in 30 days", "مجموع": "Total", "کل وظایف": "Total tasks",
+"تعداد عادت‌ها": "Total habits", "روزهای فعال": "Active days", "ساعت تمرکز": "Focus hours",
+"تکمیل": "Complete", "ناتمام": "Incomplete", "مهم": "Important", "معمولی": "Normal", "کم‌اهمیت": "Low",
+"🔥 هنوز زمانی ثبت نشده": "🔥 No time logged yet", "ℹ️ حافظهٔ دائمی در این حالت در دسترس نیست — داده‌ها فقط تا بستن صفحه نگه داده می‌شوند": "ℹ️ Persistent storage is not available in this mode — data is kept only until you close the page"
+};
 var I18N_REV = {}; for (var _k in I18N){ I18N_REV[I18N[_k]] = _k; }
 var EN_MONTHS = ["Farvardin", "Ordibehesht", "Khordad", "Tir", "Mordad", "Shahrivar", "Mehr", "Aban", "Azar", "Dey", "Bahman", "Esfand"], EN_WEEKDAYS = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 var LANG = (function(){
-try {
-var q = new URLSearchParams(location.search).get('lang');
-if (q === 'en' || q === 'fa') return q;
-} catch(e){}
+try { var q = new URLSearchParams(location.search).get('lang'); if (q === 'en' || q === 'fa') return q; } catch(e){}
 if (window.__DEFAULT_LANG__) return window.__DEFAULT_LANG__;
-try {
-var v = window[['local','Storage'].join('')].getItem('pd_lang');
-if (v === 'en' || v === 'fa') return v;
-} catch(e){}
+try { var v = window[['local','Storage'].join('')].getItem('pd_lang'); if (v === 'en' || v === 'fa') return v; } catch(e){}
 return 'fa';
 })();
 var SKIP_TAGS = {SCRIPT:1, STYLE:1, TEXTAREA:1, CANVAS:1, SVG:1};
@@ -812,12 +1017,40 @@ try { updateClock(); } catch(e){}
 translateNode(document.body);
 }
 }
+function t_(faStr){ return (LANG === 'en' && I18N[faStr]) ? I18N[faStr] : faStr; }
 function fa(v){ return (LANG === 'en') ? String(v) : String(v).replace(/[0-9]/g, function(d){ return FA_DIGITS[+d]; }); }
 function $(id){ return document.getElementById(id); }
 function div(a,b){ return Math.trunc(a/b); }
 function mod(a,b){ return a - Math.trunc(a/b)*b; }
 function escapeHtml(t){ const d = document.createElement('div'); d.textContent = t == null ? '' : t; return d.innerHTML; }
 function debounce(fn, ms){ let t; return function(){ const a = arguments, c = this; clearTimeout(t); t = setTimeout(function(){ fn.apply(c,a); }, ms); }; }
+/* ==========================================================================
+1b. I18N COVERAGE PATCH + language helpers (additive; keeps locked literal intact)
+========================================================================== */
+Object.assign(I18N, {
+"عادت انجام‌شده": "Habit done", "وظیفه انجام‌شده": "Task done",
+"میانگین:": "Average:", "٪": "%",
+"+ وظیفه جدید": "+ New task", "همه وظایف": "All tasks", "عادت‌های من": "My habits",
+"جستجو در وظایف…": "Search tasks…", "جستجو در عادت‌ها…": "Search habits…",
+"هدف اختیاری": "Optional goal",
+"ناوبری اصلی": "Main navigation", "ناوبری موبایل": "Mobile navigation",
+"رفتن به محتوای اصلی": "Skip to main content",
+"برای مدیریت زمان، پیگیری عادت‌ها و سازماندهی وظایف روزانه است. این ابزار برای کاربران فارسی‌زبان طراحی شده و از": "for managing your time, tracking habits and organising your day. It was built for Persian speakers and supports the",
+"روتین نیازی به نصب ندارد؛ کافی است وارد سایت شوید و برنامه‌ریزی را شروع کنید. داده‌های شخصی شما در مرورگر ذخیره می‌شوند و می‌توانید هر زمان از آن‌ها نسخهٔ پشتیبان بگیرید.": "No installs, no sign-ups — open the site and start planning. Your data stays in your browser, and a backup is always one click away.",
+"با ثبت روزانهٔ عادت‌ها می‌توانید:": "Logging your habits every day helps you:",
+"بله. داده‌های فعالیت شما در مرورگر خودتان ذخیره می‌شود و روتین برای ذخیرهٔ این داده‌ها به سرور نیاز ندارد.": "Yes. Your activity data lives in your own browser — Routine needs no server at all.",
+"از بخش ابزارها گزینهٔ پشتیبان را انتخاب کنید تا فایل JSON داده‌ها دانلود شود و در آینده قابل بازیابی باشد.": "Open the menu and pick Backup. A JSON file downloads, ready to restore whenever you need it.",
+"هر روزی که عادت را کامل کنید یک روز به استریک اضافه می‌شود. بهترین رکورد شما نیز ذخیره می‌ماند.": "Every completed day adds one more to your streak, and your best run is always kept.",
+"بله. هدف روزانه اختیاری است؛ وقتی هدف داشته باشید نوار و درصد پیشرفت روزانه نمایش داده می‌شود.": "Yes. Daily goals are optional — set one and the progress bar and percentage switch on.",
+"چه نوع عادت‌هایی می‌توانم ثبت کنم؟": "What kinds of habits can I track?",
+"سه نوع ثبت وجود دارد: چک‌باکس برای انجام/عدم انجام، عددی برای مقدار و تایمر برای اندازه‌گیری زمان فعالیت.": "Three: a checkbox for done or not, a counter for amounts, and a timer for focused time.",
+"— ابزار فارسی پیگیری عادت‌ها، وظایف و مدیریت زمان با تقویم شمسی و نمودار پیشرفت": "— a Persian habit, task and time tracker with a Persian calendar and progress charts",
+"ساخته‌شده برای ساختن روتین بهتر | ©": "Built for better routines | ©"
+});
+I18N_REV = {}; for (var _k2 in I18N){ I18N_REV[I18N[_k2]] = _k2; }
+function L(faS, enS){ return (LANG === 'en') ? enS : faS; }
+function pctTxt(v){ v = Math.round(v); return (LANG === 'en') ? (v + '%') : (fa(v) + '٪'); }
+function daysTxt(n){ return (LANG === 'en') ? (n + (n === 1 ? ' day' : ' days')) : (fa(n) + ' روز'); }
 /* ==========================================================================
 2. STORAGE (single source of truth, quota-aware)
 ========================================================================== */
@@ -847,7 +1080,7 @@ try { STORE.set(key, JSON.stringify(val)); return true; }
 catch(e){
 if (!storageWarned){
 storageWarned = true;
-showToast('❌ حافظهٔ مرورگر پر است — پشتیبان بگیرید و داده‌های قدیمی را پاک کنید','error',6000);
+showToast('❌ حافظه مرورگر پر است — پشتیبان بگیرید و داده‌های قدیمی را پاک کنید','error',6000);
 }
 return false;
 }
@@ -1012,7 +1245,7 @@ const l = getLog(id);
 if (!l.startedAt) return;
 const total = liveSeconds(id, l);
 setLog(id, { startedAt: null, seconds: total, value: total });
-if (!quiet){ renderHabits(); renderToday(); showToast('⏹️ ' + formatTime(total) + ' ثبت شد'); }
+if (!quiet){ renderHabits(); renderToday(); showToast(L('⏹️ ' + formatTime(total) + ' ثبت شد', '⏹️ ' + formatTime(total) + ' logged')); }
 }
 function formatTime(sec){
 const h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = Math.floor(sec%60);
@@ -1055,7 +1288,7 @@ function offerUndo(msg){
 const t = $('toast');
 t.innerHTML = '<span>' + escapeHtml(msg) + '</span>';
 const b = document.createElement('button');
-b.className = 'btn btn-sm btn-ghost'; b.style.padding = '6px 12px'; b.textContent = '↩️ برگردان';
+b.className = 'btn btn-sm btn-ghost'; b.style.padding = '6px 12px'; b.textContent = L('↩️ برگردان','↩️ Undo');
 b.onclick = performUndo;
 t.appendChild(b);
 t.className = 'toast show undo';
@@ -1132,11 +1365,11 @@ showToast('✅ ذخیره شد');
 function taskRowHTML(t, compact){
 const tk = todayKey();
 let chip = '';
-if (t.date < tk && !t.done) chip = '<span class="chip overdue">عقب‌افتاده — ' + keyToJalaliFull(t.date) + '</span>';
+if (t.date < tk && !t.done) chip = '<span class="chip overdue">' + L('عقب‌افتاده — ','Overdue — ') + keyToJalaliFull(t.date) + '</span>';
 else if (t.date === tk)     chip = '<span class="chip today">امروز</span>';
 else                        chip = '<span class="chip">' + keyToJalaliFull(t.date) + '</span>';
 return '<div class="task-item" style="--pri:' + PRI_COLOR[t.priority || 'med'] + '">' +
-'<input type="checkbox" class="task-checkbox"' + (t.done?' checked':'') + ' onchange="toggleTask(' + t.id + ')" aria-label="تکمیل ' + escapeHtml(t.name) + '">' +
+'<input type="checkbox" class="task-checkbox"' + (t.done?' checked':'') + ' onchange="toggleTask(' + t.id + ')" aria-label="' + L('تکمیل','Complete') + ' ' + escapeHtml(t.name) + '">' +
 '<span class="task-text' + (t.done?' done':'') + '">' + escapeHtml(t.name) + '</span>' +
 (compact ? '' : '<span class="chip pri-' + (t.priority||'med') + '">' + PRI_LABEL[t.priority||'med'] + '</span>') +
 chip +
@@ -1189,13 +1422,32 @@ sprout:   '<path d="M12 20.4v-6.6"/><path d="M12 13.8C12 10.6 9.6 8.2 6.2 8.2c0 
 bike:     '<circle cx="5.6" cy="16.4" r="3.5"/><circle cx="18.4" cy="16.4" r="3.5"/><path d="m5.6 16.4 4.2-7h4.4l4.2 7"/><path d="M9.8 9.4 12 16.4"/><path d="M8.6 6.4h3"/>',
 heart:    '<path d="M12 20.1s-7.6-4.5-7.6-9.6a4.3 4.3 0 0 1 7.6-2.8 4.3 4.3 0 0 1 7.6 2.8c0 5.1-7.6 9.6-7.6 9.6Z"/>',
 coffee:   '<path d="M4.6 8.4h12v5.8a4.4 4.4 0 0 1-4.4 4.4H9a4.4 4.4 0 0 1-4.4-4.4Z"/><path d="M16.6 10.1h1.5a2.4 2.4 0 0 1 0 4.8h-1.5"/><path d="M7.6 3.4v2.2M11 3.4v2.2M14.4 3.4v2.2"/><path d="M3.4 21h14.4"/>',
-chat:     '<path d="M20.4 12.4a7.6 7.6 0 0 1-8 7.6 8.7 8.7 0 0 1-3-.5L4.2 21l1.5-4.7a7.4 7.4 0 0 1-1.1-3.9 7.6 7.6 0 0 1 7.8-7.6 7.6 7.6 0 0 1 8 7.6Z"/>'
+chat:     '<path d="M20.4 12.4a7.6 7.6 0 0 1-8 7.6 8.7 8.7 0 0 1-3-.5L4.2 21l1.5-4.7a7.4 7.4 0 0 1-1.1-3.9 7.6 7.6 0 0 1 7.8-7.6 7.6 7.6 0 0 1 8 7.6Z"/>',
+star:     '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+camera:   '<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/>',
+film:     '<rect x="2" y="2" width="20" height="20" rx="2.18"/><path d="M7 2v20"/><path d="M17 2v20"/><path d="M2 12h20"/><path d="M2 7h5"/><path d="M2 17h5"/><path d="M17 17h5"/><path d="M17 7h5"/>',
+zap:      '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+smile:    '<circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01"/><path d="M15 9h.01"/>',
+gift:     '<path d="M20 12v10H4V12"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7Z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7Z"/>',
+globe:    '<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10Z"/>',
+award:    '<circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>',
+headphones:'<path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3ZM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3Z"/>',
+mic:      '<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v4"/><path d="M8 23h8"/>',
+trend:    '<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>',
+users:    '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+video:    '<polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/>',
+wind:     '<path d="M9.59 4.59A2 2 0 1 1 11 8H2"/><path d="M17.73 7.73A2.5 2.5 0 1 1 19.5 12H2"/><path d="M12.59 19.41A2 2 0 1 0 14 16H2"/>',
+sunrise:  '<path d="M17 18a5 5 0 0 0-10 0"/><path d="M12 2v7"/><path d="m4.22 10.22 1.42 1.42"/><path d="M1 18h2"/><path d="M21 18h2"/><path d="m18.36 11.64 1.42-1.42"/><path d="M23 22H1"/><path d="m8 6 4-4 4 4"/>',
+map:      '<polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><path d="M8 2v16"/><path d="M16 6v16"/>'
 };
 const ICON_LIST = [
 ['droplet','آب'],['run','دویدن'],['book','مطالعه'],['lotus','مراقبه'],['dumbbell','وزنه'],['music','موسیقی'],
 ['code','کدنویسی'],['food','تغذیه'],['moon','خواب'],['nosmoke','ترک سیگار'],['wallet','پس‌انداز'],['palette','نقاشی'],
 ['broom','نظافت'],['pen','نوشتن'],['target','هدف'],['sun','صبح زود'],['walk','پیاده‌روی'],['brain','تمرکز'],
-['nophone','بی‌گوشی'],['sprout','گیاه'],['bike','دوچرخه'],['heart','سلامتی'],['coffee','قهوه'],['chat','ارتباط']
+['nophone','بی‌گوشی'],['sprout','گیاه'],['bike','دوچرخه'],['heart','سلامتی'],['coffee','قهوه'],['chat','ارتباط'],
+['star','ستاره'],['camera','عکاسی'],['film','فیلم'],['zap','انرژی'],['smile','حال خوب'],['gift','بخشش'],
+['globe','زبان خارجی'],['award','موفقیت'],['headphones','پادکست'],['mic','ضبط صدا'],['trend','رشد'],
+['users','دوستان'],['video','ویدیو'],['wind','تنفس عمیق'],['sunrise','طلوع'],['map','سفر']
 ];
 const DEFAULT_ICON = 'droplet';
 const LEGACY_ICON_MAP = {
@@ -1215,7 +1467,7 @@ const btn = $('habitIconBtn'), pop = $('habitIconPop'), hidden = $('habitEmoji')
 pop.innerHTML = ICON_LIST.map(function(item){
 var id = item[0], label = item[1];
 return '<button type="button" class="icon-opt" role="option" data-icon="' + id + '" aria-selected="false" title="' + label + '">' +
-iconHTML(id, 19) + '<span>' + label + '</span></button>';
+iconHTML(id, 19) + '</button>';
 }).join('');
 function paint(){
 btn.innerHTML = iconHTML(hidden.value, 22);
@@ -1264,7 +1516,7 @@ showToast('✅ عادت اضافه شد');
 function deleteHabit(id){
 const h = habits.find(function(x){ return x.id === id; }); if (!h) return;
 openModal('🗑️ حذف عادت',
-'<p style="font-size:14px;line-height:2;color:var(--text-secondary);text-align:center">با حذف «<strong>' + escapeHtml(h.name) + '</strong>» تمام تاریخچه و استریک آن هم پاک می‌شود.<br>مطمئن هستید؟</p>' +
+'<p style="font-size:14px;line-height:2;color:var(--text-secondary);text-align:center">' + L('با حذف «','Deleting "') + '<strong>' + escapeHtml(h.name) + '</strong>» ' + L('تمام تاریخچه و استریک آن هم پاک می‌شود.','will erase all of its history and streak.') + '<br>' + L('مطمئن هستید؟','Are you sure?') + '</p>' +
 '<div style="display:flex;gap:10px;margin-top:20px">' +
 '<button class="btn btn-danger" style="flex:1" onclick="confirmDeleteHabit(' + id + ')">بله، حذف کن</button>' +
 '<button class="btn btn-ghost" style="flex:1" onclick="closeModal()">انصراف</button>' +
@@ -1284,14 +1536,14 @@ openModal('✏️ ویرایش عادت',
 '<div class="form-row"><label for="ehName">نام عادت</label><input id="ehName" class="input" maxlength="60" value="' + escapeHtml(h.name) + '"></div>' +
 '<div class="form-grid">' +
 '<div class="form-row"><label for="ehCat">دسته‌بندی</label><select id="ehCat" class="sel input">' + ['سلامت','ورزش','یادگیری','کار','شخصی','مالی','هنر','خانه'].map(function(c){ return '<option'+(h.category===c?' selected':'')+'>'+c+'</option>'; }).join('') + '</select></div>' +
-'<div class="form-row"><label for="ehGoal">هدف روزانه' + (h.type==='timer'?' (دقیقه)':'') + '</label><input id="ehGoal" type="number" min="0" step="0.5" class="input" value="' + (h.goal||'') + '" placeholder="بدون هدف"></div>' +
+'<div class="form-row"><label for="ehGoal">' + L('هدف روزانه','Daily goal') + (h.type==='timer'? L(' (دقیقه)',' (minutes)') : '') + '</label><input id="ehGoal" type="number" min="0" step="0.5" class="input" value="' + (h.goal||'') + '" placeholder="بدون هدف"></div>' +
 '<div class="form-row"><label for="ehColor">رنگ</label><input id="ehColor" type="color" class="input" style="width:100%;height:46px" value="' + h.color + '"></div>' +
 '</div>' +
 '<div class="form-row"><label>نماد</label><div class="icon-grid" id="ehIcons" role="listbox" aria-label="نماد عادت">' +
-ICON_LIST.map(function(item){ var iid = item[0], label = item[1]; return '<button type="button" class="icon-opt" role="option" data-icon="' + iid + '" title="' + label + '" aria-selected="' + (h.emoji === iid ? 'true' : 'false') + '">' + iconHTML(iid, 19) + '<span>' + label + '</span></button>'; }).join('') +
+ICON_LIST.map(function(item){ var iid = item[0], label = item[1]; return '<button type="button" class="icon-opt" role="option" data-icon="' + iid + '" title="' + label + '" aria-selected="' + (h.emoji === iid ? 'true' : 'false') + '">' + iconHTML(iid, 19) + '</button>'; }).join('') +
 '</div></div>' +
 '<input type="hidden" id="ehEmoji" value="' + escapeHtml(h.emoji || DEFAULT_ICON) + '">' +
-'<p style="font-size:12px;color:var(--text-muted);font-weight:600;margin-bottom:12px">نوع عادت پس از ساخت قابل تغییر نیست تا تاریخچه معتبر بماند.</p>' +
+'<p style="font-size:12px;color:var(--text-muted);font-weight:600;margin-bottom:12px">' + L('نوع عادت پس از ساخت قابل تغییر نیست تا تاریخچه معتبر بماند.','The habit type is locked after creation so its history stays valid.') + '</p>' +
 '<button class="btn btn-primary" style="width:100%" onclick="saveHabitEdit(' + id + ')">ذخیره تغییرات</button>');
 const grid = $('ehIcons');
 if (grid) grid.addEventListener('click', function(e){
@@ -1339,21 +1591,21 @@ const st = habitStreaks(h);
 const prog = habitProgress(h);
 let controls = '';
 if (h.type === 'checkbox'){
-controls = '<button class="habit-check-btn' + (l.checked?' checked':'') + '" onclick="toggleHabitCheck(' + h.id + ')">' + (l.checked ? '✅ انجام شد' : '⬜ انجام نشده') + '</button>';
+controls = '<button class="habit-check-btn' + (l.checked?' checked':'') + '" onclick="toggleHabitCheck(' + h.id + ')">' + (l.checked ? L('✅ انجام شد','✅ Done') : L('⬜ انجام نشده','⬜ Not done')) + '</button>';
 } else if (h.type === 'number'){
 controls =
 '<button class="btn-icon" onclick="bumpHabit(' + h.id + ',-1)" aria-label="کاهش">−</button>' +
 '<input type="number" class="habit-input" value="' + l.value + '" onchange="updateHabitNumber(' + h.id + ',this.value)" min="0" step="0.5" aria-label="' + (LANG === 'en' ? 'Value of ' : 'مقدار ') + escapeHtml(h.name) + '">' +
 '<button class="btn-icon" onclick="bumpHabit(' + h.id + ',1)" aria-label="افزایش">+</button>' +
-(h.goal > 0 ? '<span class="habit-label">از ' + fa(h.goal) + '</span>' : '');
+(h.goal > 0 ? '<span class="habit-label">' + L('از ' + fa(h.goal), 'of ' + h.goal) + '</span>' : '');
 } else {
 controls =
 '<div class="habit-timer-display' + (running?' pulsing':'') + '" id="timer-' + h.id + '">' + formatTime(liveSeconds(h.id,l)) + '</div>' +
 '<button class="btn ' + (running?'btn-danger':'btn-success') + ' btn-sm" onclick="' + (running?'stopTimer':'startTimer') + '(' + h.id + ')">' + (running ? '⏹️ توقف' : '▶️ شروع') + '</button>' +
-(h.goal > 0 ? '<span class="habit-label">هدف ' + fa(h.goal) + ' دقیقه</span>' : '');
+(h.goal > 0 ? '<span class="habit-label">' + L('هدف ' + fa(h.goal) + ' دقیقه', 'Goal: ' + h.goal + ' min') + '</span>' : '');
 }
 const streakHTML = st.current > 0
-? '<span class="streak-badge">🔥 ' + fa(st.current) + ' روز</span>'
+? '<span class="streak-badge">🔥 ' + daysTxt(st.current) + '</span>'
 : '<span class="streak-badge cold">شروع کنید</span>';
 return '<div class="habit-row' + (running?' active':'') + (prog>=1?' done-today':'') + '" style="--habit-color:' + h.color + '">' +
 '<div class="habit-info">' +
@@ -1363,7 +1615,7 @@ return '<div class="habit-row' + (running?' active':'') + (prog>=1?' done-today'
 '<div class="habit-meta">' +
 '<span style="color:' + h.color + '">●</span> ' + escapeHtml(h.category) +
 streakHTML +
-(st.best > 0 ? '<span>رکورد: ' + fa(st.best) + '</span>' : '') +
+(st.best > 0 ? '<span>' + L('رکورد: ' + fa(st.best), 'Best: ' + st.best) + '</span>' : '') +
 '</div>' +
 (h.goal > 0 ? '<div class="goal-bar"><span id="goalbar-' + h.id + '" style="width:' + Math.round(prog*100) + '%;background:' + h.color + '"></span></div>' : '') +
 '</div>' +
@@ -1381,7 +1633,7 @@ let f = habits;
 if (q) f = f.filter(function(h){ return h.name.toLowerCase().includes(q); });
 if (catFilter !== 'all') f = f.filter(function(h){ return h.category === catFilter; });
 const doneCount = habits.filter(function(h){ return habitDone(h); }).length;
-$('habitCounter').textContent = habits.length ? fa(doneCount) + ' از ' + fa(habits.length) + ' انجام شد' : '';
+$('habitCounter').textContent = habits.length ? L(fa(doneCount) + ' از ' + fa(habits.length) + ' انجام شد', doneCount + ' of ' + habits.length + ' done') : '';
 list.innerHTML = f.length ? f.map(habitRowHTML).join('')
 : '<div class="empty-state"><div class="empty-state-icon">🔥</div><div class="empty-state-text">عادتی یافت نشد</div><div class="empty-state-sub">با یک عادت کوچک شروع کنید — مثلاً ۱۰ دقیقه مطالعه.</div></div>';
 if (habits.some(function(h){ return isRunning(h.id); })) ensureTick();
@@ -1399,14 +1651,14 @@ const s = dayScore(tk);
 const pct = Math.round(s.pct * 100);
 const C = 2 * Math.PI * 52;
 $('progressCircle').style.strokeDashoffset = C - (pct/100)*C;
-$('progressPercent').textContent = fa(pct) + '٪';
+$('progressPercent').textContent = pctTxt(pct);
 const totalMin = habits.filter(function(h){ return h.type==='timer'; }).reduce(function(a,h){ return a + liveSeconds(h.id)/60; }, 0);
 $('todayStats').innerHTML =
-stat('📋', fa(list.length), 'وظایف امروز') +
-stat('✅', fa(doneTasks) + '/' + fa(list.length), 'انجام شده', doneTasks===list.length && list.length>0) +
-stat('🔥', fa(habits.length), 'عادت‌ها') +
-stat('🎯', fa(doneHabits) + '/' + fa(habits.length), 'کامل شده', doneHabits===habits.length && habits.length>0) +
-stat('⏱️', fa(Math.round(totalMin)), 'دقیقه تمرکز');
+stat('📋', fa(list.length), L('وظایف امروز',"Today's tasks")) +
+stat('✅', fa(doneTasks) + '/' + fa(list.length), L('انجام شده','Done'), doneTasks===list.length && list.length>0) +
+stat('🔥', fa(habits.length), L('عادت‌ها','Habits')) +
+stat('🎯', fa(doneHabits) + '/' + fa(habits.length), L('کامل شده','Completed'), doneHabits===habits.length && habits.length>0) +
+stat('⏱️', fa(Math.round(totalMin)), L('دقیقه تمرکز','Focus minutes'));
 $('todayTasks').innerHTML = list.length ? list.map(function(t){ return taskRowHTML(t, true); }).join('')
 : '<div class="empty-state"><div class="empty-state-icon">📭</div><div class="empty-state-text">وظیفه‌ای برای امروز نیست</div><div class="empty-state-sub">روز آزادی دارید — یا شاید وقتش است هدف تازه‌ای تعریف کنید.</div></div>';
 const remaining = habits.filter(function(h){ return !habitDone(h); });
@@ -1455,7 +1707,7 @@ for (let i=0;i<182;i++){
 const k = keyOf(d);
 const s = dayScore(k);
 const a = (s.total && !s.future) ? (0.16 + s.pct*0.84) : 0;
-cells.push('<div class="hm-cell" title="' + keyToJalaliFull(k) + ' — ' + fa(Math.round(s.pct*100)) + '٪" style="' + (a ? 'background:rgba(var(--accent-rgb),'+a.toFixed(2)+');border-color:transparent' : '') + '"></div>');
+cells.push('<div class="hm-cell" title="' + keyToJalaliFull(k) + ' — ' + pctTxt(s.pct*100) + '" style="' + (a ? 'background:rgba(var(--accent-rgb),'+a.toFixed(2)+');border-color:transparent' : '') + '"></div>');
 d.setDate(d.getDate()+1);
 }
 $('heatmap').innerHTML = cells.join('');
@@ -1472,7 +1724,7 @@ function openDayModal(k){
 const tl = tasks.filter(function(t){ return t.date === k; });
 const hl = habits.filter(function(h){ return habitExistedOn(h,k); }).map(function(h){ return { h:h, l:getLog(h.id,k) }; }).filter(function(x){ return x.l.value || x.l.checked || x.l.seconds; });
 const s = dayScore(k);
-let c = '<div style="text-align:center;margin-bottom:6px"><span class="chip">' + fa(Math.round(s.pct*100)) + '٪ تکمیل</span></div>';
+let c = '<div style="text-align:center;margin-bottom:6px"><span class="chip">' + L(fa(Math.round(s.pct*100)) + '٪ تکمیل', Math.round(s.pct*100) + '% done') + '</span></div>';
 if (tl.length){
 c += '<div class="modal-section-title">📋 وظایف</div>';
 c += tl.map(function(t){ return '<div class="modal-item"><div class="item-left"><span>' + (t.done?'✅':'⬜') + '</span><span class="item-name' + (t.done?' done':'') + '">' + escapeHtml(t.name) + '</span></div><span class="modal-tag ' + (t.done?'done':'') + '">' + PRI_LABEL[t.priority||'med'] + '</span></div>'; }).join('');
@@ -1482,8 +1734,8 @@ c += '<div class="modal-section-title">🔥 عادت‌ها</div>';
 c += hl.map(function(x){
 const h = x.h, l = x.l;
 let v = '';
-if (h.type === 'checkbox') v = l.checked ? '✅ انجام شد' : '⬜ ناتمام';
-else if (h.type === 'number') v = fa(l.value) + (h.goal ? ' از ' + fa(h.goal) : '');
+if (h.type === 'checkbox') v = l.checked ? L('✅ انجام شد','✅ Done') : L('⬜ ناتمام','⬜ Not done');
+else if (h.type === 'number') v = L(fa(l.value) + (h.goal ? ' از ' + fa(h.goal) : ''), l.value + (h.goal ? ' of ' + h.goal : ''));
 else v = formatTime(l.seconds);
 return '<div class="modal-item"><div class="item-left"><span style="display:flex;color:' + h.color + '">' + iconHTML(h.emoji, 19) + '</span><span class="item-name">' + escapeHtml(h.name) + '</span></div><span class="modal-tag' + (habitDone(h,k)?' done':'') + '">' + v + '</span></div>';
 }).join('');
@@ -1504,13 +1756,13 @@ return a + habits.filter(function(h){ return h.type==='timer'; }).reduce(functio
 }, 0) / 3600;
 const rate = tasks.length ? Math.round(doneTasks/tasks.length*100) : 0;
 $('statsGrid').innerHTML =
-box(fa(tasks.length),'کل وظایف') + box(fa(doneTasks),'انجام شده') + box(fa(rate)+'٪','نرخ تکمیل') +
-box(fa(habits.length),'تعداد عادت‌ها') + box(fa(activeDays),'روزهای فعال') +
-box('🔥 '+fa(bestStreak),'بهترین استریک') + box(fa(totalHours.toFixed(1)),'ساعت تمرکز');
+box(fa(tasks.length), L('کل وظایف','Total tasks')) + box(fa(doneTasks), L('انجام شده','Done')) + box(pctTxt(rate), L('نرخ تکمیل','Completion')) +
+box(fa(habits.length), L('تعداد عادت‌ها','Habits')) + box(fa(activeDays), L('روزهای فعال','Active days')) +
+box('🔥 '+fa(bestStreak), L('بهترین استریک','Best streak')) + box(fa(totalHours.toFixed(1)), L('ساعت تمرکز','Focus hours'));
 const week = []; for (let i=6;i>=0;i--) week.push(keyShift(-i));
 const wp = week.map(function(k){ return Math.round(dayScore(k).pct*100); });
 $('weeklyChart').innerHTML = wp.map(function(v,i){
-return '<div class="chart-col"><div class="chart-bar-visual" style="height:' + Math.max(3, v/100*150) + 'px;background:linear-gradient(to top,var(--accent),var(--accent-2))" data-val="' + fa(v) + '٪"></div><span class="chart-label">' + keyToJalaliShort(week[i]) + '</span></div>';
+return '<div class="chart-col"><div class="chart-bar-visual" style="height:' + Math.max(3, v/100*150) + 'px;background:linear-gradient(to top,var(--accent),var(--accent-2))" data-val="' + pctTxt(v) + '"></div><span class="chart-label">' + keyToJalaliShort(week[i]) + '</span></div>';
 }).join('');
 $('weeklyTotal').textContent = fa(Math.round(wp.reduce(function(a,b){ return a+b; },0)/7));
 const month = []; for (let i=29;i>=0;i--) month.push(keyShift(-i));
@@ -1527,7 +1779,7 @@ if (h.type === 'checkbox') return l.checked ? 1 : 0;
 if (h.type === 'number')   return l.value;
 return l.seconds/60;
 });
-const unit = h.type === 'timer' ? ' دقیقه' : (h.type === 'number' ? '' : '');
+const unit = h.type === 'timer' ? L(' دقیقه',' min') : (h.type === 'number' ? '' : '');
 const max = Math.max.apply(null, vals.concat([h.type==='checkbox'?1:(h.goal||1)]));
 const total = vals.reduce(function(a,b){ return a+b; },0);
 const st = habitStreaks(h);
@@ -1536,8 +1788,8 @@ return '<div class="individual-chart">' +
 '<span style="display:flex;color:' + h.color + '">' + iconHTML(h.emoji, 21) + '</span>' +
 '<span class="habit-name">' + escapeHtml(h.name) + '</span>' +
 '<span class="chip">' + escapeHtml(h.category) + '</span>' +
-'<span class="streak-badge' + (st.current?'':' cold') + '">🔥 ' + fa(st.current) + '</span>' +
-'<span class="card-hint">مجموع ' + fa(total.toFixed(h.type==='checkbox'?0:1)) + unit + '</span>' +
+'<span class="streak-badge' + (st.current?'':' cold') + '">🔥 ' + daysTxt(st.current) + '</span>' +
+'<span class="card-hint">' + L('مجموع ','Total ') + fa(total.toFixed(h.type==='checkbox'?0:1)) + unit + '</span>' +
 '</div>' +
 '<div class="chart-bar">' + vals.map(function(v,i){
 return '<div class="chart-col"><div class="chart-bar-visual" style="height:' + Math.max(3,(v/max)*80) + 'px;background:' + h.color + '" data-val="' + fa(v.toFixed(h.type==='checkbox'?0:1)) + '"></div><span class="chart-label">' + keyToJalaliShort(week[i]) + '</span></div>';
@@ -1547,7 +1799,7 @@ return '<div class="chart-col"><div class="chart-bar-visual" style="height:' + M
 }
 let bytes = 0;
 [KEYS.tasks,KEYS.habits,KEYS.logs].forEach(function(k){ const v = STORE.get(k); if (v) bytes += v.length * 2; });
-$('storageSize').textContent = fa((bytes/1024).toFixed(1)) + ' کیلوبایت';
+$('storageSize').textContent = L(fa((bytes/1024).toFixed(1)) + ' کیلوبایت', (bytes/1024).toFixed(1) + ' KB');
 }
 function box(v,l){ return '<div class="stat-box"><div class="stat-value">'+v+'</div><div class="stat-label">'+l+'</div></div>'; }
 function drawTrend(keys, vals){
@@ -1583,7 +1835,7 @@ svg.innerHTML = '<path d="'+area+'" fill="var(--accent)" class="line-chart-area"
 svg.querySelectorAll('.line-chart-dot').forEach(function(el){
 el.addEventListener('mouseenter', function(){
 const tt = $('trendTooltip');
-tt.textContent = keyToJalaliFull(el.dataset.k) + ' — ' + fa(el.dataset.v) + '٪';
+tt.textContent = keyToJalaliFull(el.dataset.k) + ' — ' + pctTxt(el.dataset.v);
 const r = el.getBoundingClientRect(), c = svg.parentElement.getBoundingClientRect();
 tt.style.left = Math.max(4, Math.min(c.width - tt.offsetWidth - 4, r.left - c.left + r.width/2 - tt.offsetWidth/2)) + 'px';
 tt.style.top  = (r.top - c.top - 42) + 'px';
@@ -1615,8 +1867,8 @@ data.forEach(function(x){ const f = x.s / total;
 seg += '<circle cx="90" cy="90" r="' + R + '" fill="none" stroke="' + x.h.color + '" stroke-width="26" stroke-dasharray="' + (f*C).toFixed(1) + ' ' + C.toFixed(1) + '" stroke-dashoffset="' + (-off*C).toFixed(1) + '" transform="rotate(-90 90 90)"/>'; off += f; });
 boxEl.innerHTML = '<svg width="180" height="180" viewBox="0 0 180 180" role="img" aria-label="توزیع زمان تمرکز">' + seg +
 '<text x="90" y="86" text-anchor="middle" class="progress-text" style="font-size:24px">' + fa((total/3600).toFixed(1)) + '</text>' +
-'<text x="90" y="112" text-anchor="middle" class="progress-label">ساعت در ۳۰ روز</text></svg>' +
-'<div class="fd-legend">' + data.map(function(x){ return '<div class="fd-item"><span class="fd-dot" style="background:' + x.h.color + '"></span><span class="fd-name">' + escapeHtml(x.h.name) + '</span><span class="fd-val">' + fa(Math.round(x.s/total*100)) + '٪ · ' + fa(Math.round(x.s/60)) + ' دقیقه</span></div>'; }).join('') + '</div>';
+'<text x="90" y="112" text-anchor="middle" class="progress-label">' + L('ساعت در ۳۰ روز','Hours in 30 days') + '</text></svg>' +
+'<div class="fd-legend">' + data.map(function(x){ return '<div class="fd-item"><span class="fd-dot" style="background:' + x.h.color + '"></span><span class="fd-name">' + escapeHtml(x.h.name) + '</span><span class="fd-val">' + L(fa(Math.round(x.s/total*100)) + '٪ · ' + fa(Math.round(x.s/60)) + ' دقیقه', Math.round(x.s/total*100) + '% · ' + Math.round(x.s/60) + ' min') + '</span></div>'; }).join('') + '</div>';
 }
 /* ==========================================================================
 12. MODAL
@@ -1693,7 +1945,7 @@ function drawShareCard(canvas, s){
 const t = CARD_THEMES[document.documentElement.getAttribute('data-theme')] || CARD_THEMES.dark;
 const ctx = canvas.getContext('2d');
 canvas.width = CARD_W; canvas.height = CARD_H;
-ctx.direction = 'rtl'; ctx.textBaseline = 'alphabetic';
+ctx.direction = LANG === 'en' ? 'ltr' : 'rtl'; ctx.textBaseline = 'alphabetic';
 const bg = ctx.createLinearGradient(CARD_W, 0, 0, CARD_H);
 bg.addColorStop(0, t.bg[0]); bg.addColorStop(.46, t.bg[1]); bg.addColorStop(1, t.bg[2]);
 ctx.fillStyle = bg; ctx.fillRect(0,0,CARD_W,CARD_H);
@@ -1709,20 +1961,20 @@ roundRect(ctx, 786, 78, 84, 84, 26); ctx.stroke();
 ctx.beginPath(); ctx.moveTo(807,121); ctx.lineTo(823,137); ctx.lineTo(850,100); ctx.lineWidth = 9; ctx.stroke();
 ctx.restore();
 ctx.textAlign = 'right'; ctx.fillStyle = t.text; ctx.font = '800 40px Vazirmatn, sans-serif';
-ctx.fillText('روتین', 758, 118);
+ctx.fillText(t_('روتین'), 758, 118);
 ctx.fillStyle = t.sub; ctx.font = '600 26px Vazirmatn, sans-serif';
-ctx.fillText('پیگیری عادت‌ها و وظایف روزانه', 758, 158);
+ctx.fillText(t_('پیگیری عادت‌ها و وظایف روزانه'), 758, 158);
 ctx.textAlign = 'center';
 let heroNum, heroLabel, heroIcon, box1;
 if (s.current > 0){
-heroNum = s.current; heroLabel = 'روز پیاپی'; heroIcon = '🔥';
-box1 = [fa(s.best), 'بهترین استریک'];
+heroNum = s.current; heroLabel = t_('روز پیاپی'); heroIcon = '🔥';
+box1 = [fa(s.best), t_('بهترین استریک')];
 } else if (s.best > 0){
-heroNum = s.best; heroLabel = 'بیشترین روز پیاپی'; heroIcon = '🌱';
-box1 = [fa(habits.length), 'عادت در حال پیگیری'];
+heroNum = s.best; heroLabel = t_('بیشترین روز پیاپی'); heroIcon = '🌱';
+box1 = [fa(habits.length), t_('عادت در حال پیگیری')];
 } else {
-heroNum = s.activeDays; heroLabel = 'روز فعال'; heroIcon = '🌱';
-box1 = [fa(habits.length), 'عادت در حال پیگیری'];
+heroNum = s.activeDays; heroLabel = t_('روز فعال'); heroIcon = '🌱';
+box1 = [fa(habits.length), t_('عادت در حال پیگیری')];
 }
 ctx.font = '400 104px sans-serif'; ctx.fillText(heroIcon, CARD_W/2, 318);
 const grad = ctx.createLinearGradient(CARD_W/2 - 260, 0, CARD_W/2 + 260, 0);
@@ -1740,7 +1992,7 @@ ctx.fillStyle = t.cell; roundRect(ctx, CARD_W/2 - w/2, 618, w, 74, 37); ctx.fill
 ctx.strokeStyle = t.accent; ctx.lineWidth = 2.5; ctx.stroke();
 ctx.fillStyle = t.text; ctx.fillText(label, CARD_W/2, 666);
 }
-const stats = [box1, [fa(s.doneTotal), 'روز انجام‌شده'], [fa(s.weekAvg) + '٪', 'هفتهٔ گذشته']];
+const stats = [box1, [fa(s.doneTotal), t_('روز انجام‌شده')], [L(fa(s.weekAvg) + '٪', s.weekAvg + '%'), t_('هفتهٔ گذشته')]];
 const bw = 276, gap = 22, x0 = (CARD_W - (bw*3 + gap*2)) / 2, by = 716;
 stats.forEach(function(st, i){
 const x = x0 + i*(bw+gap);
@@ -1756,7 +2008,7 @@ const cs = Math.floor((900 - (cols-1)*cg) / cols);
 const gw = cols*cs + (cols-1)*cg, gh = rows*cs + (rows-1)*cg;
 const gx = (CARD_W - gw)/2, gy = 906;
 ctx.fillStyle = t.sub; ctx.font = '600 26px Vazirmatn, sans-serif'; ctx.textAlign = 'right';
-ctx.fillText(fa(HEAT_WEEKS) + ' هفتهٔ گذشته', gx + gw, gy - 20);
+ctx.fillText(L(fa(HEAT_WEEKS) + ' هفتهٔ گذشته', 'Last ' + HEAT_WEEKS + ' weeks'), gx + gw, gy - 20);
 for (let i = 0; i < s.cells.length; i++){
 const col = Math.floor(i/rows), row = i % rows;
 const x = gx + gw - cs - col*(cs+cg), y = gy + row*(cs+cg);
@@ -1770,7 +2022,7 @@ ctx.globalAlpha = 1;
 ctx.textAlign = 'center'; ctx.fillStyle = t.sub; ctx.font = '700 30px Vazirmatn, sans-serif';
 ctx.direction = 'ltr';
 ctx.fillText('en-five-zeta.vercel.app', CARD_W/2, gy + gh + 66);
-ctx.direction = 'rtl';
+ctx.direction = LANG === 'en' ? 'ltr' : 'rtl';
 }
 let cardStats = null;
 function renderShareCard(habitId){
@@ -1780,6 +2032,15 @@ drawShareCard(cv, cardStats);
 }
 function shareCardText(){
 const s = cardStats || shareStats();
+if (LANG === 'en'){
+const who = s.habit ? ' "' + s.habit.name + '"' : '';
+const head = s.current > 0
+? '🔥 ' + s.current + '-day streak' + who + '!\nPersonal best: ' + s.best + ' days'
+: (s.best > 0
+? '🌱 Restarting' + who + ' today.\nLongest run so far: ' + s.best + ' days'
+: '🌱 Day one' + who + ' starts today.');
+return head + '\nTrack your habits for free 👇\n' + SHARE_URL;
+}
 const who = s.habit ? ' «' + s.habit.name + '»' : '';
 const head = s.current > 0
 ? '🔥 ' + fa(s.current) + ' روز پیاپی' + who + '\nبهترین استریکم: ' + fa(s.best) + ' روز'
@@ -1882,8 +2143,8 @@ if (!d || (!d.tasks && !d.habits)) throw new Error('bad');
 undoSnapshot = snapshot();
 if (Array.isArray(d.tasks))  tasks  = d.tasks.map(function(t){ return Object.assign({ priority:'med', done:false }, t); });
 if (Array.isArray(d.habits)) habits = d.habits.map(function(h){ return Object.assign({ goal:0 }, h); });
-const L = d.logs || d.habitLogs;
-if (L && typeof L === 'object') logs = L;
+const LG = d.logs || d.habitLogs;
+if (LG && typeof LG === 'object') logs = LG;
 Object.keys(logs).forEach(function(k){ Object.keys(logs[k]||{}).forEach(function(id){ if (logs[k][id]) logs[k][id].startedAt = null; }); });
 saveAll(); renderCatFilters(); renderAll();
 offerUndo('📤 داده‌ها بازیابی شدند');
@@ -2007,17 +2268,17 @@ const bestStreak=habits.reduce(function(m,h){ return Math.max(m,habitStreaks(h).
 const pct = todayTasks.length+activeHabits ? Math.round((doneTasks+doneHabits)/Math.max(1,todayTasks.length+activeHabits)*100) : 0;
 $('homeDateLabel').textContent = keyToJalaliFull(tk);
 $('homeSummary').innerHTML = [
-['✓','وظایف',fa(doneTasks)+' از '+fa(todayTasks.length),'امروز'],
-['◉','عادت‌ها',fa(doneHabits)+' از '+fa(activeHabits),'امروز'],
+['✓','وظایف',L(fa(doneTasks)+' از '+fa(todayTasks.length), doneTasks+' of '+todayTasks.length),'امروز'],
+['◉','عادت‌ها',L(fa(doneHabits)+' از '+fa(activeHabits), doneHabits+' of '+activeHabits),'امروز'],
 ['◷','زمان تمرکز',formatTime(focusSec),'تایمرهای فعال'],
-['🔥','استریک فعلی',fa(bestStreak)+' روز','بهترینِ فعلی']
+['🔥','استریک فعلی',daysTxt(bestStreak),'بهترینِ فعلی']
 ].map(function(x){ return '<div class="summary-item"><div class="summary-icon">'+x[0]+'</div><div><div class="summary-label">'+x[1]+'</div><div class="summary-value">'+x[2]+'</div><div class="summary-sub">'+x[3]+'</div></div></div>'; }).join('');
 const recentTasks=todayTasks.slice(0,5);
-$('homeTaskList').innerHTML = recentTasks.length ? '<div class="home-list">'+recentTasks.map(function(t){ return '<div class="home-row"><span class="dot" style="background:'+PRI_COLOR[t.priority||'med']+'"></span><span class="main">'+escapeHtml(t.name)+'</span><span class="meta">'+(t.done?'✓ انجام شد':'○ باقی‌مانده')+'</span></div>'; }).join('')+'</div>' : '<div class="empty-state"><div class="empty-state-icon">📋</div><div class="empty-state-text">برای امروز وظیفه‌ای نداری</div></div>';
+$('homeTaskList').innerHTML = recentTasks.length ? '<div class="home-list">'+recentTasks.map(function(t){ return '<div class="home-row"><span class="dot" style="background:'+PRI_COLOR[t.priority||'med']+'"></span><span class="main">'+escapeHtml(t.name)+'</span><span class="meta">'+(t.done?L('✓ انجام شد','✓ done'):L('○ باقی‌مانده','○ left'))+'</span></div>'; }).join('')+'</div>' : '<div class="empty-state"><div class="empty-state-icon">📋</div><div class="empty-state-text">برای امروز وظیفه‌ای نداری</div></div>';
 $('homeHabitList').innerHTML = habits.length ? '<div class="home-list">'+habits.slice(0,5).map(function(h){ const l=getLog(h.id); const val=h.type==='checkbox'?(l.checked?'✓':'○'):h.type==='number'?fa(l.value):formatTime(liveSeconds(h.id,l)); return '<div class="home-row"><span class="home-habit-icon" style="color:'+h.color+'">'+iconHTML(h.emoji,18)+'</span><span class="main">'+escapeHtml(h.name)+'</span><span class="home-pill">'+val+'</span></div>'; }).join('')+'</div>' : '<div class="empty-state"><div class="empty-state-icon">🔥</div><div class="empty-state-text">هنوز عادتی اضافه نکرده‌ای</div></div>';
 const week=[]; for(let i=6;i>=0;i--) week.push(keyShift(-i));
 $('homeBars').innerHTML=week.map(function(k){ const v=Math.round(dayScore(k).pct*100); return '<div class="home-bar-col"><div class="home-bar" style="height:'+Math.max(5,v*.9)+'px"></div><span class="home-bar-label">'+keyToJalaliShort(k)+'</span></div>'; }).join('');
-$('homeMiniWeek').innerHTML=week.map(function(k){ const s=dayScore(k), today=k===tk; return '<button class="mini-day" type="button" onclick="openDayModal(\''+k+'\')"><span class="mini-dot '+((s.total&&!s.future)?(s.pct>=.7?'high':s.pct>=.3?'med':'low'):'')+(today?' today':'')+'">'+keyToJalaliShort(k)+'</span><span>'+Math.round(s.pct*100)+'٪</span></button>'; }).join('');
+$('homeMiniWeek').innerHTML=week.map(function(k){ const s=dayScore(k), today=k===tk; return '<button class="mini-day" type="button" onclick="openDayModal(\''+k+'\')"><span class="mini-dot '+((s.total&&!s.future)?(s.pct>=.7?'high':s.pct>=.3?'med':'low'):'')+(today?' today':'')+'">'+keyToJalaliShort(k)+'</span><span>'+pctTxt(s.pct*100)+'</span></button>'; }).join('');
 renderFocusDonut();
 }
 function showToast(msg, type, ms){
