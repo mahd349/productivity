@@ -960,7 +960,8 @@ var I18N = {
 "🔥 هنوز زمانی ثبت نشده": "🔥 No time logged yet", "ℹ️ حافظهٔ دائمی در این حالت در دسترس نیست — داده‌ها فقط تا بستن صفحه نگه داده می‌شوند": "ℹ️ Persistent storage is not available in this mode — data is kept only until you close the page"
 };
 var I18N_REV = {}; for (var _k in I18N){ I18N_REV[I18N[_k]] = _k; }
-var EN_MONTHS = ["Farvardin", "Ordibehesht", "Khordad", "Tir", "Mordad", "Shahrivar", "Mehr", "Aban", "Azar", "Dey", "Bahman", "Esfand"], EN_WEEKDAYS = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+var EN_MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+var EN_WEEKDAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 var LANG = (function(){
 try { var q = new URLSearchParams(location.search).get('lang'); if (q === 'en' || q === 'fa') return q; } catch(e){}
 if (window.__DEFAULT_LANG__) return window.__DEFAULT_LANG__;
@@ -1024,6 +1025,53 @@ function div(a,b){ return Math.trunc(a/b); }
 function mod(a,b){ return a - Math.trunc(a/b)*b; }
 function escapeHtml(t){ const d = document.createElement('div'); d.textContent = t == null ? '' : t; return d.innerHTML; }
 function debounce(fn, ms){ let t; return function(){ const a = arguments, c = this; clearTimeout(t); t = setTimeout(function(){ fn.apply(c,a); }, ms); }; }
+/* ==========================================================================
+3b. CALENDAR ABSTRACTION LAYER
+========================================================================== */
+const Calendar = {
+  getToday: function(){
+    const d = new Date();
+    if (LANG === 'fa'){
+      const j = gregorianToJalali(d.getFullYear(), d.getMonth()+1, d.getDate());
+      return { jy:j[0], jm:j[1], jd:j[2] };
+    }
+    return { jy:d.getFullYear(), jm:d.getMonth()+1, jd:d.getDate() };
+  },
+  getMonths: function(){ return (LANG === 'fa') ? PERSIAN_MONTHS : EN_MONTHS; },
+  getWeekdays: function(){ return (LANG === 'fa') ? PERSIAN_WEEKDAYS : EN_WEEKDAYS; },
+  getDaysInMonth: function(y, m){
+    if (LANG === 'fa') return m <= 6 ? 31 : (m <= 11 ? 30 : (isJalaliLeap(y) ? 30 : 29));
+    return new Date(y, m, 0).getDate();
+  },
+  getFirstWeekday: function(y, m){
+    if (LANG === 'fa') return getJalaliDayOfWeek(y, m, 1);
+    return new Date(y, m - 1, 1).getDay();
+  },
+  getDayOfWeek: function(date){
+    if (LANG === 'fa') return (date.getDay() + 1) % 7;
+    return date.getDay();
+  },
+  isHoliday: function(y, m, d){
+    if (LANG !== 'fa') return false;
+    return getJalaliDayOfWeek(y, m, d) === 6;
+  },
+  toKey: function(y, m, d){
+    const g = (LANG === 'fa') ? jalaliToGregorian(y, m, d) : [y, m, d];
+    return g[0] + '-' + String(g[1]).padStart(2,'0') + '-' + String(g[2]).padStart(2,'0');
+  },
+  getMonthYear: function(y, m){ return Calendar.getMonths()[m-1] + ' ' + fa(y); },
+  formatDay: function(y, m, d){
+    if (LANG === 'fa') return formatJalali(y, m, d);
+    return EN_WEEKDAYS[new Date(y, m-1, d).getDay()] + ', ' + EN_MONTHS[m-1] + ' ' + d + ', ' + y;
+  },
+  formatDate: function(date){
+    if (LANG === 'fa'){
+      const j = gregorianToJalali(date.getFullYear(), date.getMonth()+1, date.getDate());
+      return formatJalali(j[0], j[1], j[2]);
+    }
+    return EN_MONTHS[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
+  }
+};
 /* ==========================================================================
 1b. I18N COVERAGE PATCH + language helpers (additive; keeps locked literal intact)
 ========================================================================== */
@@ -1143,19 +1191,23 @@ return { jy:jy, jm:jm, jd:jd };
 function gregorianToJalali(gy,gm,gd){ const r = d2j(g2d(gy,gm,gd)); return [r.jy,r.jm,r.jd]; }
 function jalaliToGregorian(jy,jm,jd){ const r = d2g(j2d(jy,jm,jd)); return [r.gy,r.gm,r.gd]; }
 function isJalaliLeap(jy){ return jalCal(jy).leap === 0; }
-function getJalaliMonthDays(jy,jm){ return jm <= 6 ? 31 : (jm <= 11 ? 30 : (isJalaliLeap(jy) ? 30 : 29)); }
 function getTodayJalali(){ const d = new Date(); return gregorianToJalali(d.getFullYear(), d.getMonth()+1, d.getDate()); }
-function getJalaliDayOfWeek(jy,jm,jd){ const g = jalaliToGregorian(jy,jm,jd); return (new Date(g[0],g[1]-1,g[2]).getDay() + 1) % 7; }
-function formatJalali(jy,jm,jd){
-return (LANG === 'en')
-? (jd + ' ' + EN_MONTHS[jm-1] + ' ' + jy)
-: (fa(jd) + ' ' + PERSIAN_MONTHS[jm-1] + ' ' + fa(jy));
-}
+function getJalaliMonthDays(jy, jm){ return jm <= 6 ? 31 : (jm <= 11 ? 30 : (isJalaliLeap(jy) ? 30 : 29)); }
+function getJalaliDayOfWeek(jy, jm, jd){ const g = jalaliToGregorian(jy, jm, jd); return (new Date(g[0], g[1]-1, g[2]).getDay() + 1) % 7; }
+function formatJalali(jy, jm, jd){ return fa(jd) + ' ' + PERSIAN_MONTHS[jm-1] + ' ' + fa(jy); }
 function keyOf(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
 function todayKey(){ return keyOf(new Date()); }
 function keyShift(days){ const d = new Date(); d.setDate(d.getDate() + days); return keyOf(d); }
-function keyToJalaliShort(k){ const p = k.split('-').map(Number); const j = gregorianToJalali(p[0],p[1],p[2]); return fa(j[2]); }
-function keyToJalaliFull(k){ const p = k.split('-').map(Number); const j = gregorianToJalali(p[0],p[1],p[2]); return formatJalali(j[0],j[1],j[2]); }
+function keyToJalaliShort(k){
+  const p = k.split('-').map(Number);
+  if (LANG === 'en') return EN_MONTHS[p[1]-1].slice(0,3) + ' ' + p[2];
+  const j = gregorianToJalali(p[0],p[1],p[2]); return fa(j[2]);
+}
+function keyToJalaliFull(k){
+  const p = k.split('-').map(Number);
+  if (LANG === 'en') return EN_MONTHS[p[1]-1] + ' ' + p[2] + ', ' + p[0];
+  const j = gregorianToJalali(p[0],p[1],p[2]); return formatJalali(j[0],j[1],j[2]);
+}
 /* ==========================================================================
 4. LOGS API
 ========================================================================== */
@@ -1671,33 +1723,29 @@ function stat(e,v,l,ok){ return '<div class="today-stat"><div class="today-stat-
 ========================================================================== */
 let calView = { jy:null, jm:null };
 function renderCalendar(){
-if (calView.jy === null){ const j = getTodayJalali(); calView.jy = j[0]; calView.jm = j[1]; }
-const jy = calView.jy, jm = calView.jm;
-const days = getJalaliMonthDays(jy, jm);
-const firstDow = getJalaliDayOfWeek(jy, jm, 1);
-$('calendarMonthYear').textContent = (LANG === 'en')
-? (EN_MONTHS[jm-1] + ' ' + jy) : (PERSIAN_MONTHS[jm-1] + ' ' + fa(jy));
-const WD = (LANG === 'en') ? EN_WEEKDAYS : PERSIAN_WEEKDAYS;
-let html = WD.map(function(d){ return '<div class="weekday-header">' + d.slice(0,3) + '</div>'; }).join('');
-for (let i=0;i<firstDow;i++) html += '<div class="calendar-day empty"></div>';
-const tk = todayKey();
-for (let d=1; d<=days; d++){
-const g = jalaliToGregorian(jy,jm,d);
-const k = g[0] + '-' + String(g[1]).padStart(2,'0') + '-' + String(g[2]).padStart(2,'0');
-const s = dayScore(k);
-const hasHabit = !s.future && habits.some(function(h){ return habitExistedOn(h,k) && habitDone(h,k); });
-const hasTask  = tasks.some(function(t){ return t.date === k && t.done; });
-const cls = 'work-none' + (s.future ? ' future' : '');
-const isFri = getJalaliDayOfWeek(jy,jm,d) === 6;
-html += '<button type="button" class="calendar-day ' + cls + (k===tk?' today':'') + (isFri && s.total===0 ?' holiday':'') + '" onclick="openDayModal(\'' + k + '\')" aria-label="' + formatJalali(jy,jm,d) + '">' +
-'<span>' + fa(d) + '</span><span class="cd-dots">' +
-(hasHabit ? '<i class="cd-dot" style="background:#38bdf8"></i>' : '') +
-(hasTask  ? '<i class="cd-dot" style="background:#fbbf24"></i>' : '') +
-'</span>' +
-'</button>';
-}
-$('calendarGrid').innerHTML = html;
-renderHeatmap();
+  if (calView.jy === null || calView.lang !== LANG){ const t = Calendar.getToday(); calView.jy = t.jy; calView.jm = t.jm; calView.lang = LANG; }
+  const jy = calView.jy, jm = calView.jm;
+  const days = Calendar.getDaysInMonth(jy, jm);
+  const firstDow = Calendar.getFirstWeekday(jy, jm);
+  $('calendarMonthYear').textContent = Calendar.getMonthYear(jy, jm);
+  const WD = Calendar.getWeekdays();
+  let html = WD.map(function(d){ return '<div class="weekday-header">' + d.slice(0,3) + '</div>'; }).join('');
+  for (let i=0;i<firstDow;i++) html += '<div class="calendar-day empty"></div>';
+  const tk = todayKey();
+  for (let d=1; d<=days; d++){
+    const k = Calendar.toKey(jy, jm, d);
+    const s = dayScore(k);
+    const hasHabit = !s.future && habits.some(function(h){ return habitExistedOn(h,k) && habitDone(h,k); });
+    const hasTask  = tasks.some(function(t){ return t.date === k && t.done; });
+    const cls = 'work-none' + (s.future ? ' future' : '');
+    html += '<button type="button" class="calendar-day ' + cls + (k===tk?' today':'') + (Calendar.isHoliday(jy,jm,d) && s.total===0 ? ' holiday':'') + '" onclick="openDayModal(\'' + k + '\')" aria-label="' + Calendar.formatDay(jy, jm, d) + '">' +
+      '<span>' + fa(d) + '</span><span class="cd-dots">' +
+      (hasHabit ? '<i class="cd-dot" style="background:#38bdf8"></i>' : '') +
+      (hasTask  ? '<i class="cd-dot" style="background:#fbbf24"></i>' : '') +
+      '</span></button>';
+  }
+  $('calendarGrid').innerHTML = html;
+  renderHeatmap();
 }
 function renderHeatmap(){
 const cells = [];
@@ -1719,7 +1767,14 @@ while (calView.jm > 12){ calView.jm -= 12; calView.jy++; }
 while (calView.jm < 1){ calView.jm += 12; calView.jy--; }
 renderCalendar();
 }
-function goToday(){ const j = getTodayJalali(); calView.jy = j[0]; calView.jm = j[1]; renderCalendar(); }
+function changeMonth(delta){
+  if (calView.jy === null || calView.lang !== LANG){ const t = Calendar.getToday(); calView.jy = t.jy; calView.jm = t.jm; calView.lang = LANG; }
+  calView.jm += delta;
+  while (calView.jm > 12){ calView.jm -= 12; calView.jy++; }
+  while (calView.jm < 1){ calView.jm += 12; calView.jy--; }
+  renderCalendar();
+}
+function goToday(){ const t = Calendar.getToday(); calView.jy = t.jy; calView.jm = t.jm; calView.lang = LANG; renderCalendar(); }
 function openDayModal(k){
 const tl = tasks.filter(function(t){ return t.date === k; });
 const hl = habits.filter(function(h){ return habitExistedOn(h,k); }).map(function(h){ return { h:h, l:getLog(h.id,k) }; }).filter(function(x){ return x.l.value || x.l.checked || x.l.seconds; });
@@ -2222,8 +2277,9 @@ if (!t) t = window.matchMedia && window.matchMedia('(prefers-color-scheme: light
 applyTheme(t);
 })();
 (function initManifest(){
+if (!/^https?:$/.test(location.protocol)) return;
 const m = {
-name:'روتین', short_name:'بهره‌وری', start_url:'.', display:'standalone',
+name:'روتین', short_name:'بهره‌وری', start_url: location.href, display:'standalone.', display:'standalone',
 background_color:'#0a0f20', theme_color:'#6366f1', dir:'rtl', lang:'fa',
 description:'پیگیری عادت‌ها، مدیریت وظایف و برنامه‌ریزی روزانه با تقویم شمسی',
 icons:[{ src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='120' fill='%236366f1'/%3E%3Cpath d='M144 272l70 70 154-154' stroke='white' stroke-width='48' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E", sizes:'512x512', type:'image/svg+xml', purpose:'any' }]
@@ -2239,12 +2295,13 @@ deferredPrompt = null; $('drawerInstall').style.display = 'none';
 });
 function updateClock(){
 const n = new Date();
-$('clock').textContent = fa(String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0') + ':' + String(n.getSeconds()).padStart(2,'0'));
-const j = getTodayJalali();
-$('persianDate').textContent = (LANG === 'en')
-? n.toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long', year:'numeric'})
-: (PERSIAN_WEEKDAYS[getJalaliDayOfWeek(j[0],j[1],j[2])] + '، ' + formatJalali(j[0],j[1],j[2]));
 const h = n.getHours();
+$('clock').textContent = fa(String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0') + ':' + String(n.getSeconds()).padStart(2,'0'));
+$('footerYear').textContent = (LANG === 'en') ? String(n.getFullYear()) : fa(getTodayJalali()[0]);
+const j = getTodayJalali();
+const weekdays = Calendar.getWeekdays();
+const dayName = weekdays[Calendar.getDayOfWeek(new Date())];
+$('persianDate').textContent = dayName + ', ' + Calendar.formatDate(new Date(), 'MMMM dd, yyyy');
 $('pageGreeting').innerHTML = LANG === 'en' ? 'Hello <span class="wave">👋</span>' : 'سلام <span class="wave">👋</span>';
 $('greeting').textContent = (LANG === 'en')
 ? (h < 5  ? '🌙 Still up? A little rest helps too'
@@ -2438,7 +2495,5 @@ mo.observe(document.body, {childList:true, subtree:true});
 document.getElementById('bgLayerClickTarget')?.addEventListener('click', function(){ switchTab('home'); closeDrawer(); });
 });
 </script>
-<!-- Cloudflare Web Analytics -->
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "f3493af2a4e3492ebb08d300769e0088"}'></script>
 </body>
 </html>
