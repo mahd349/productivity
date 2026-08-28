@@ -2327,7 +2327,7 @@ $('homeDateLabel').textContent = keyToJalaliFull(tk);
 $('homeSummary').innerHTML = [
 ['✓','وظایف',L(fa(doneTasks)+' از '+fa(todayTasks.length), doneTasks+' of '+todayTasks.length),'امروز'],
 ['◉','عادت‌ها',L(fa(doneHabits)+' از '+fa(activeHabits), doneHabits+' of '+activeHabits),'امروز'],
-['◷','زمان تمرکز',formatTime(focusSec),'تایمرهای فعال'],
+['◷',L('زمان تمرکز','Focus time'),formatTime(focusSec),L('تایمرهای فعال','Active timers')],
 ['🔥','استریک فعلی',daysTxt(bestStreak),'بهترینِ فعلی']
 ].map(function(x){ return '<div class="summary-item"><div class="summary-icon">'+x[0]+'</div><div><div class="summary-label">'+x[1]+'</div><div class="summary-value">'+x[2]+'</div><div class="summary-sub">'+x[3]+'</div></div></div>'; }).join('');
 const recentTasks=todayTasks.slice(0,5);
