@@ -2495,5 +2495,85 @@ mo.observe(document.body, {childList:true, subtree:true});
 document.getElementById('bgLayerClickTarget')?.addEventListener('click', function(){ switchTab('home'); closeDrawer(); });
 });
 </script>
+<!-- ===== بنر هشدار مهاجرت به تیکوچی ===== -->
+<div id="migration-banner" style="position: fixed; bottom: 0; left: 0; width: 100%; background-color: #ff9800; color: #000; text-align: center; padding: 15px; font-family: Tahoma, sans-serif; z-index: 99999; box-shadow: 0 -2px 10px rgba(0,0,0,0.2); direction: rtl;">
+    <p style="margin: 0 0 10px 0; font-size: 16px; font-weight: bold;">
+        ⚠️ روتین حالا تیکوچی است! آدرس جدید: tiko-chi.vercel.app
+    </p>
+    <p style="margin: 0 0 15px 0; font-size: 14px;">
+        قبل از رفتن، لطفاً از داده‌های خود یک پشتیبان بگیرید تا اطلاعاتتان از بین نرود.
+    </p>
+    <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+        <button id="download-backup-btn" style="padding: 10px 20px; background: #4caf50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+            📥 دانلود پشتیبان
+        </button>
+        <button id="copy-code-btn" style="padding: 10px 20px; background: #2196f3; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+            📋 کپی کد انتقال
+        </button>
+        <a href="https://tiko-chi.vercel.app/" style="padding: 10px 20px; background: #fff; color: #333; text-decoration: none; border-radius: 5px; font-weight: bold; border: 1px solid #ccc;">
+            🚀 برو به تیکوچی
+        </a>
+    </div>
+</div>
+
+<script>
+    // اسکریپت مربوط به دکمه‌های بنر
+    (function() {
+        const banner = document.getElementById('migration-banner');
+        
+        // اگر کاربر قبلاً داده‌هاش رو دانلود کرده، بنر رو نشون نده (اختیاری)
+        // if (localStorage.getItem('migration_done')) {
+        //     banner.style.display = 'none';
+        // }
+
+        // تابع گرفتن کل داده‌های localStorage
+        function getAllData() {
+            const data = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                // فقط کلیدهای مربوط به اپ رو بگیر (نه کلیدهای خود بنر)
+                if (key !== 'migration_done') {
+                    data[key] = localStorage.getItem(key);
+                }
+            }
+            return data;
+        }
+
+        // دکمه دانلود پشتیبان
+        document.getElementById('download-backup-btn').addEventListener('click', function() {
+            const data = getAllData();
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'routine-backup-' + new Date().toISOString().slice(0,10) + '.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            alert('پشتیبان با موفقیت دانلود شد!');
+        });
+
+        // دکمه کپی کد انتقال
+        document.getElementById('copy-code-btn').addEventListener('click', function() {
+            const data = getAllData();
+            const jsonStr = JSON.stringify(data);
+            
+            navigator.clipboard.writeText(jsonStr).then(function() {
+                alert('کد انتقال کپی شد! آن را در تیکوچی وارد کنید.');
+            }).catch(function(err) {
+                // روش جایگزین برای کپی اگر مرورگر پشتیبانی نکرد
+                const textarea = document.createElement('textarea');
+                textarea.value = jsonStr;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert('کد انتقال کپی شد!');
+            });
+        });
+    })();
+</script>
+<!-- ===== پایان بنر ===== -->
 </body>
 </html>
