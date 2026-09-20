@@ -2509,5 +2509,23 @@ mo.observe(document.body, {childList:true, subtree:true});
 document.getElementById('bgLayerClickTarget')?.addEventListener('click', function(){ switchTab('home'); closeDrawer(); });
 });
 </script>
+  <div id="moveNotice" style="position:fixed;inset-inline:16px;bottom:16px;z-index:2000;background:#0d1222;border:1px solid rgba(148,163,184,.25);border-radius:16px;padding:16px 18px;box-shadow:0 12px 40px rgba(0,0,0,.5);max-width:520px;margin-inline:auto">
+<strong style="display:block;margin-bottom:6px">📦 روتین حالا تیکوچی است!</strong>
+<span style="color:#aab6ce;font-size:13px;display:block;margin-bottom:10px">این آدرس به‌زودی غیرفعال می‌شود. همین حالا یک پشتیبان بگیر و در آدرس جدید ادامه بده: tiko-chi.vercel.app</span>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button id="mnBackup" style="background:#6366f1;color:#fff;border:0;border-radius:10px;padding:9px 14px;font-weight:700;cursor:pointer">📥 دانلود پشتیبان</button>
+<a href="https://tiko-chi.vercel.app/?lang=fa" style="background:rgba(255,255,255,.08);color:#fff;border-radius:10px;padding:9px 14px;font-weight:700;text-decoration:none">رفتن به تیکوچی</a>
+<button id="mnClose" style="background:transparent;color:#aab6ce;border:0;cursor:pointer;padding:9px">✕</button>
+</div>
+</div>
+<script>
+(function(){
+try{if(localStorage.getItem("pd_move_notice")==="1"){document.getElementById("moveNotice").remove();return;}}catch(e){}
+var b=document.getElementById("mnBackup");
+if(b){b.onclick=function(){if(window.Stats&&window.Stats.exportBackup){window.Stats.exportBackup();}};}
+var c=document.getElementById("mnClose");
+if(c){c.onclick=function(){try{localStorage.setItem("pd_move_notice","1");}catch(e){}document.getElementById("moveNotice").remove();};}
+})();
+</script>
 </body>
 </html>
