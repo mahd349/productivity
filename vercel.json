@@ -1,10 +1,5 @@
 {
   "redirects": [
-    {
-      "source": "/:path*",
-      "missing": [ { "type": "query", "key": "stay" } ],
-      "destination": "https://tiko-chi.vercel.app/:path*",
-      "permanent": true
-    }
+    { "source": "/:path*", "destination": "https://tiko-chi.vercel.app/:path*", "permanent": true }
   ]
 }
