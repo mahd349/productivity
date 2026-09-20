@@ -1,5 +1,0 @@
-{
-  "redirects": [
-    { "source": "/:path*", "destination": "https://tiko-chi.vercel.app/:path*", "permanent": true }
-  ]
-}
