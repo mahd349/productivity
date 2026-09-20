@@ -1,7 +1,10 @@
 {
-"redirects": [
-{ "source": "/sitemap.xml", "destination": "https://tiko-chi.vercel.app/sitemap.xml", "permanent": true },
-{ "source": "/robots.txt", "destination": "https://tiko-chi.vercel.app/robots.txt", "permanent": true },
-{ "source": "/:path*", "destination": "https://tiko-chi.vercel.app/:path*", "permanent": true }
-]
+  "redirects": [
+    {
+      "source": "/:path*",
+      "missing": [ { "type": "query", "key": "stay" } ],
+      "destination": "https://tiko-chi.vercel.app/:path*",
+      "permanent": true
+    }
+  ]
 }
