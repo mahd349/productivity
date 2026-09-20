@@ -1,8 +1,9 @@
 {
-  "rewrites": [
+  "redirects": [
     {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "destination": "https://tiko-chi.vercel.app/$1",
+      "permanent": true
     }
   ]
 }
